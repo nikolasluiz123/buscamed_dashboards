@@ -1,8 +1,11 @@
 import os
+from functools import partial
 import streamlit as st
 from dotenv import load_dotenv
 
 from src.di.container import ApplicationContainer
+from src.presentation.pages.prescriptions_page import render_prescriptions_page
+from src.presentation.pages.pill_packs_page import render_pill_packs_page
 
 load_dotenv()
 
@@ -30,15 +33,35 @@ def init_container() -> ApplicationContainer:
     return container
 
 
-def main():
+def main() -> None:
+    """
+    Ponto de entrada da aplicação Streamlit responsável pelo roteamento.
+    """
+    st.set_page_config(page_title="Dashboard de Avaliação LLM", layout="wide")
+
     container = init_container()
 
-    st.title("Dashboard de Avaliação LLM")
-    st.write("Container inicializado e banco de dados atualizado com sucesso!")
+    prescriptions_page = st.Page(
+        page=partial(render_prescriptions_page, container),
+        title="Prescrições Médicas",
+        icon="📄",
+        url_path="/prescriptions",
+        default=True
+    )
 
-    # Exemplo prático de como chamar um UseCase a partir do container:
-    # use_case = container.calculate_prescription_accuracy_use_case()
-    # accuracy = use_case.execute()
+    pill_packs_page = st.Page(
+        page=partial(render_pill_packs_page, container),
+        title="Cartelas de Comprimidos",
+        icon="💊",
+        url_path="/pillpacks"
+    )
+
+    pages = {
+        "Casos de Uso": [prescriptions_page, pill_packs_page]
+    }
+
+    pg = st.navigation(pages)
+    pg.run()
 
 
 if __name__ == "__main__":
