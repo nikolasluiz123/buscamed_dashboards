@@ -33,6 +33,14 @@ def init_container() -> ApplicationContainer:
     return container
 
 
+def render_placeholder_analytics() -> None:
+    """
+    Renderiza um conteúdo temporário para as páginas de análise.
+    """
+    st.title("Análise de Desempenho")
+    st.info("Página em construção. Os gráficos de consumo de tokens e acurácia individual serão exibidos aqui.")
+
+
 def main() -> None:
     """
     Ponto de entrada da aplicação Streamlit responsável pelo roteamento.
@@ -41,23 +49,38 @@ def main() -> None:
 
     container = init_container()
 
-    prescriptions_page = st.Page(
+    presc_audit_page = st.Page(
         page=partial(render_prescriptions_page, container),
-        title="Prescrições Médicas",
+        title="Auditoria de Execuções",
         icon="📄",
-        url_path="/prescriptions",
+        url_path="prescriptions_audit",
         default=True
     )
 
-    pill_packs_page = st.Page(
+    presc_analytics_page = st.Page(
+        page=render_placeholder_analytics,
+        title="Análise de Desempenho",
+        icon="📊",
+        url_path="prescriptions_analytics"
+    )
+
+    pill_audit_page = st.Page(
         page=partial(render_pill_packs_page, container),
-        title="Cartelas de Comprimidos",
+        title="Auditoria de Execuções",
         icon="💊",
-        url_path="/pillpacks"
+        url_path="pillpacks_audit"
+    )
+
+    pill_analytics_page = st.Page(
+        page=render_placeholder_analytics,
+        title="Análise de Desempenho",
+        icon="📊",
+        url_path="pillpacks_analytics"
     )
 
     pages = {
-        "Casos de Uso": [prescriptions_page, pill_packs_page]
+        "Prescrições Médicas": [presc_audit_page, presc_analytics_page],
+        "Cartelas de Comprimidos": [pill_audit_page, pill_analytics_page]
     }
 
     pg = st.navigation(pages)
