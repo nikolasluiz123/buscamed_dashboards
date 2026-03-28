@@ -38,6 +38,7 @@ def render_prescriptions_page(container: ApplicationContainer) -> None:
     accuracy_use_case = container.calculate_prescription_accuracy_use_case()
     calc_time_use_case = container.calculate_processing_time_use_case()
     get_image_use_case = container.get_image_use_case()
+    single_accuracy_use_case = container.evaluate_single_prescription_use_case()
 
     try:
         with open(container.config.prescription_answer_key_path(), "r", encoding="utf-8") as f:
@@ -72,11 +73,19 @@ def render_prescriptions_page(container: ApplicationContainer) -> None:
             image_id = _extract_image_id(selected_img_execution.storage_image_path)
             expected_data = next((item for item in answer_keys if item.get("id") == image_id), None)
 
+            individual_score = None
+            if expected_data and selected_img_execution.result:
+                try:
+                    predicted_data = json.loads(selected_img_execution.result)
+                    individual_score = single_accuracy_use_case.execute(expected_data, predicted_data) * 100
+                except json.JSONDecodeError:
+                    pass
+
             render_execution_details(
                 execution=selected_img_execution,
                 get_image_use_case=get_image_use_case,
                 expected_json=expected_data,
-                individual_accuracy=None
+                individual_accuracy=individual_score
             )
 
     with tab_text:
@@ -86,9 +95,17 @@ def render_prescriptions_page(container: ApplicationContainer) -> None:
         if selected_txt_execution:
             expected_data = next((item for item in answer_keys if item.get("id") == selected_txt_execution.id), None)
 
+            individual_score = None
+            if expected_data and selected_txt_execution.result:
+                try:
+                    predicted_data = json.loads(selected_txt_execution.result)
+                    individual_score = single_accuracy_use_case.execute(expected_data, predicted_data) * 100
+                except json.JSONDecodeError:
+                    pass
+
             render_execution_details(
                 execution=selected_txt_execution,
                 get_image_use_case=get_image_use_case,
                 expected_json=expected_data,
-                individual_accuracy=None
+                individual_accuracy=individual_score
             )

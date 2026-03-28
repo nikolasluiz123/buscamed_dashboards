@@ -10,6 +10,7 @@ from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescri
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
 from src.domain.use_cases.database_migrations_use_case import RunDatabaseMigrationsUseCase
 from src.domain.use_cases.evaluation.calculate_processing_time_use_case import CalculateProcessingTimeUseCase
+from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
 from src.domain.use_cases.evaluation.evaluators import (
     EvaluateTextSimilarityUseCase,
     EvaluateExactMatchUseCase,
@@ -42,6 +43,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
     text_evaluator = providers.Singleton(EvaluateTextSimilarityUseCase)
     exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
     list_evaluator = providers.Singleton(EvaluateListGreedyMatchingUseCase)
+
 
     prescription_local_ds = providers.Factory(
         PrescriptionLocalDataSource,
@@ -89,14 +91,19 @@ class ApplicationContainer(containers.DeclarativeContainer):
         repository=pill_pack_repository
     )
 
+    evaluate_single_prescription_use_case = providers.Factory(
+        EvaluateSinglePrescriptionUseCase,
+        text_evaluator=text_evaluator,
+        exact_evaluator=exact_evaluator,
+        list_evaluator=list_evaluator
+    )
+
     calculate_prescription_accuracy_use_case = providers.Factory(
         CalculatePrescriptionAccuracyUseCase,
         repository=prescription_repository,
         file_reader=file_reader,
         answer_key_path=config.prescription_answer_key_path,
-        text_evaluator=text_evaluator,
-        exact_evaluator=exact_evaluator,
-        list_evaluator=list_evaluator
+        single_evaluator=evaluate_single_prescription_use_case
     )
 
     calculate_pill_pack_accuracy_use_case = providers.Factory(
