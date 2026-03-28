@@ -48,7 +48,7 @@ def render_prescriptions_page(container: ApplicationContainer) -> None:
 
     col_title, col_button = st.columns([8, 2])
     with col_button:
-        if st.button("🔄 Sincronizar Dados", use_container_width=True):
+        if st.button("🔄 Sincronizar Dados", width="stretch"):
             with st.spinner("Buscando novas execuções..."):
                 new_records = asyncio.run(sync_use_case.execute())
                 if new_records > 0:

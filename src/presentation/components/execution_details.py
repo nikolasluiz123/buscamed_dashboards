@@ -40,7 +40,7 @@ def render_execution_details(
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col_expected, col_result, col_img = st.columns([2, 2, 1])
+    col_expected, col_result, col_img = st.columns([3, 3, 2])
 
     with col_expected:
         st.markdown("#### Gabarito Esperado")
@@ -66,7 +66,7 @@ def render_execution_details(
             with st.spinner("Carregando imagem..."):
                 try:
                     image_bytes = asyncio.run(get_image_use_case.execute(execution))
-                    st.image(image_bytes, use_container_width=True)
+                    st.image(image_bytes, width="stretch")
                 except Exception as e:
                     st.error(f"Não foi possível carregar a imagem original.\n\nDetalhe do Erro: {str(e)}")
         else:
