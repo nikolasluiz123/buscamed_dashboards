@@ -1,0 +1,95 @@
+from abc import ABC, abstractmethod
+import duckdb
+from typing import List, Optional
+
+from src.data.queries import ExecutionQueries
+from src.domain.entities import Execution
+
+
+class LocalDataSource(ABC):
+    """
+    Abstração para o acesso a dados locais.
+    """
+
+    @abstractmethod
+    def get_last_sync_date(self) -> Optional[str]:
+        pass
+
+    @abstractmethod
+    def save_executions(self, executions: List[Execution]) -> None:
+        pass
+
+    @abstractmethod
+    def get_all_executions(self) -> List[Execution]:
+        pass
+
+
+class DuckDBLocalDataSource(LocalDataSource):
+    """
+    Implementação base do LocalDataSource para DuckDB.
+    """
+
+    def __init__(self, db_path: str, execution_type: str):
+        self.db_path = db_path
+        self.execution_type = execution_type
+
+    def get_last_sync_date(self) -> Optional[str]:
+        with duckdb.connect(self.db_path) as con:
+            result = con.execute(ExecutionQueries.GET_LAST_SYNC_DATE, [self.execution_type]).fetchone()
+            return result[0].isoformat() if result and result[0] else None
+
+    def save_executions(self, executions: List[Execution]) -> None:
+        if not executions:
+            return
+
+        with duckdb.connect(self.db_path) as con:
+            con.execute("BEGIN TRANSACTION")
+            for execution in executions:
+                con.execute(ExecutionQueries.UPSERT_EXECUTION, [
+                    execution.id,
+                    execution.execution_type,
+                    execution.input_tokens,
+                    execution.output_tokens,
+                    execution.result,
+                    execution.success,
+                    execution.start_date,
+                    execution.end_date,
+                    execution.storage_image_path
+                ])
+            con.execute("COMMIT")
+
+    def get_all_executions(self) -> List[Execution]:
+        with duckdb.connect(self.db_path) as con:
+            rows = con.execute(ExecutionQueries.GET_ALL_EXECUTIONS_BY_TYPE, [self.execution_type]).fetchall()
+
+            return [
+                Execution(
+                    id=row[0],
+                    execution_type=row[1],
+                    input_tokens=row[2],
+                    output_tokens=row[3],
+                    result=row[4],
+                    success=row[5],
+                    start_date=row[6],
+                    end_date=row[7],
+                    storage_image_path=row[8]
+                ) for row in rows
+            ]
+
+
+class PrescriptionLocalDataSource(DuckDBLocalDataSource):
+    """
+    Implementação específica para dados locais de Receitas Médicas.
+    """
+
+    def __init__(self, db_path: str):
+        super().__init__(db_path=db_path, execution_type="prescription")
+
+
+class PillPackLocalDataSource(DuckDBLocalDataSource):
+    """
+    Implementação específica para dados locais de Cartelas de Comprimidos.
+    """
+
+    def __init__(self, db_path: str):
+        super().__init__(db_path=db_path, execution_type="pillpack")

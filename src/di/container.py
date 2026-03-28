@@ -1,0 +1,108 @@
+from dependency_injector import containers, providers
+
+from src.data.database_migrator import DatabaseMigrator
+from src.data.file.file_reader import LocalFileReader
+from src.data.local.local_data_source import PrescriptionLocalDataSource, PillPackLocalDataSource
+from src.data.remote.http_client import HttpxHttpClient
+from src.data.remote.remote_datasource import PrescriptionRemoteDataSource, PillPackRemoteDataSource
+from src.data.repositories import ExecutionRepository
+from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
+from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
+from src.domain.use_cases.database_migrations_use_case import RunDatabaseMigrationsUseCase
+from src.domain.use_cases.evaluation.evaluators import (
+    EvaluateTextSimilarityUseCase,
+    EvaluateExactMatchUseCase,
+    EvaluateListGreedyMatchingUseCase
+)
+from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
+
+
+class ApplicationContainer(containers.DeclarativeContainer):
+    """
+    Container de injeção de dependências da aplicação.
+    """
+
+    config = providers.Configuration()
+
+    migrator = providers.Factory(
+        DatabaseMigrator,
+        db_path=config.db_path
+    )
+
+    run_database_migrations_use_case = providers.Factory(
+        RunDatabaseMigrationsUseCase,
+        migrator=migrator
+    )
+
+    http_client = providers.Singleton(HttpxHttpClient)
+    file_reader = providers.Singleton(LocalFileReader)
+
+    text_evaluator = providers.Singleton(EvaluateTextSimilarityUseCase)
+    exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
+    list_evaluator = providers.Singleton(EvaluateListGreedyMatchingUseCase)
+
+    prescription_local_ds = providers.Factory(
+        PrescriptionLocalDataSource,
+        db_path=config.db_path
+    )
+
+    prescription_remote_ds = providers.Factory(
+        PrescriptionRemoteDataSource,
+        http_client=http_client,
+        base_url=config.api_base_url,
+        audience=config.oidc_audience
+    )
+
+    prescription_repository = providers.Factory(
+        ExecutionRepository,
+        local_ds=prescription_local_ds,
+        remote_ds=prescription_remote_ds
+    )
+
+    pill_pack_local_ds = providers.Factory(
+        PillPackLocalDataSource,
+        db_path=config.db_path
+    )
+
+    pill_pack_remote_ds = providers.Factory(
+        PillPackRemoteDataSource,
+        http_client=http_client,
+        base_url=config.api_base_url,
+        audience=config.oidc_audience
+    )
+
+    pill_pack_repository = providers.Factory(
+        ExecutionRepository,
+        local_ds=pill_pack_local_ds,
+        remote_ds=pill_pack_remote_ds
+    )
+
+    sync_prescription_executions_use_case = providers.Factory(
+        SyncExecutionsUseCase,
+        repository=prescription_repository
+    )
+
+    sync_pill_pack_executions_use_case = providers.Factory(
+        SyncExecutionsUseCase,
+        repository=pill_pack_repository
+    )
+
+    calculate_prescription_accuracy_use_case = providers.Factory(
+        CalculatePrescriptionAccuracyUseCase,
+        repository=prescription_repository,
+        file_reader=file_reader,
+        answer_key_path=config.prescription_answer_key_path,
+        text_evaluator=text_evaluator,
+        exact_evaluator=exact_evaluator,
+        list_evaluator=list_evaluator
+    )
+
+    calculate_pill_pack_accuracy_use_case = providers.Factory(
+        CalculatePillPackAccuracyUseCase,
+        repository=pill_pack_repository,
+        file_reader=file_reader,
+        answer_key_path=config.pill_pack_answer_key_path,
+        text_evaluator=text_evaluator,
+        exact_evaluator=exact_evaluator,
+        list_evaluator=list_evaluator
+    )
