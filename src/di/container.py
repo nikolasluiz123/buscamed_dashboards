@@ -9,11 +9,13 @@ from src.data.repositories import ExecutionRepository
 from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
 from src.domain.use_cases.database_migrations_use_case import RunDatabaseMigrationsUseCase
+from src.domain.use_cases.evaluation.calculate_processing_time_use_case import CalculateProcessingTimeUseCase
 from src.domain.use_cases.evaluation.evaluators import (
     EvaluateTextSimilarityUseCase,
     EvaluateExactMatchUseCase,
     EvaluateListGreedyMatchingUseCase
 )
+from src.domain.use_cases.get_image_use_case import GetImageUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
 
 
@@ -105,4 +107,14 @@ class ApplicationContainer(containers.DeclarativeContainer):
         text_evaluator=text_evaluator,
         exact_evaluator=exact_evaluator,
         list_evaluator=list_evaluator
+    )
+
+    calculate_processing_time_use_case = providers.Factory(
+        CalculateProcessingTimeUseCase
+    )
+
+    get_image_use_case = providers.Factory(
+        GetImageUseCase,
+        prescription_repository=prescription_repository,
+        pill_pack_repository=pill_pack_repository
     )

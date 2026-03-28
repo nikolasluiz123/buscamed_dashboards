@@ -10,6 +10,11 @@ class HttpClient(ABC):
     async def get(self, url: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None) -> Any:
         pass
 
+    @abstractmethod
+    async def get_bytes(self, url: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None) -> bytes:
+        pass
+
+
 class HttpxHttpClient(HttpClient):
     """
     Implementação do HttpClient utilizando a biblioteca httpx.
@@ -19,3 +24,9 @@ class HttpxHttpClient(HttpClient):
             response = await client.get(url, headers=headers, params=params)
             response.raise_for_status()
             return response.json()
+
+    async def get_bytes(self, url: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None) -> bytes:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            return response.read()
