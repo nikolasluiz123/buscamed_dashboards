@@ -1,3 +1,4 @@
+# src/di/container.py
 from dependency_injector import containers, providers
 
 from src.data.database_migrator import DatabaseMigrator
@@ -18,6 +19,8 @@ from src.domain.use_cases.evaluation.evaluators import (
 )
 from src.domain.use_cases.get_image_use_case import GetImageUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
+from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
+from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -43,7 +46,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
     text_evaluator = providers.Singleton(EvaluateTextSimilarityUseCase)
     exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
     list_evaluator = providers.Singleton(EvaluateListGreedyMatchingUseCase)
-
 
     prescription_local_ds = providers.Factory(
         PrescriptionLocalDataSource,
@@ -124,4 +126,25 @@ class ApplicationContainer(containers.DeclarativeContainer):
         GetImageUseCase,
         prescription_repository=prescription_repository,
         pill_pack_repository=pill_pack_repository
+    )
+
+    prescriptions_view_model = providers.Factory(
+        PrescriptionsViewModel,
+        repository=prescription_repository,
+        sync_use_case=sync_prescription_executions_use_case,
+        accuracy_use_case=calculate_prescription_accuracy_use_case,
+        calc_time_use_case=calculate_processing_time_use_case,
+        get_image_use_case=get_image_use_case,
+        single_accuracy_use_case=evaluate_single_prescription_use_case,
+        answer_key_path=config.prescription_answer_key_path
+    )
+
+    pill_packs_view_model = providers.Factory(
+        PillPacksViewModel,
+        repository=pill_pack_repository,
+        sync_use_case=sync_pill_pack_executions_use_case,
+        accuracy_use_case=calculate_pill_pack_accuracy_use_case,
+        calc_time_use_case=calculate_processing_time_use_case,
+        get_image_use_case=get_image_use_case,
+        answer_key_path=config.pill_pack_answer_key_path
     )

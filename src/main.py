@@ -49,8 +49,11 @@ def main() -> None:
 
     container = init_container()
 
+    presc_view_model = container.prescriptions_view_model()
+    pill_view_model = container.pill_packs_view_model()
+
     presc_audit_page = st.Page(
-        page=partial(render_prescriptions_page, container),
+        page=partial(render_prescriptions_page, presc_view_model),
         title="Auditoria de Execuções",
         icon="📄",
         url_path="prescriptions_audit",
@@ -65,7 +68,7 @@ def main() -> None:
     )
 
     pill_audit_page = st.Page(
-        page=partial(render_pill_packs_page, container),
+        page=partial(render_pill_packs_page, pill_view_model),
         title="Auditoria de Execuções",
         icon="💊",
         url_path="pillpacks_audit"
