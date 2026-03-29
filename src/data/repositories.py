@@ -1,10 +1,8 @@
-# src/data/repositories.py
-
 from typing import List, Optional
 
 from src.data.local.local_data_source import LocalDataSource
 from src.data.remote.remote_datasource import BaseAPIExecutionDataSource
-from src.domain.entities import Execution
+from src.domain.entities import Execution, ExecutionFilter
 
 
 class ExecutionRepository:
@@ -25,8 +23,14 @@ class ExecutionRepository:
     def save_executions(self, executions: List[Execution]) -> None:
         self.local_ds.save_executions(executions)
 
-    def get_all_executions(self) -> List[Execution]:
-        return self.local_ds.get_all_executions()
+    def get_all_executions(self, filters: Optional[ExecutionFilter] = None) -> List[Execution]:
+        return self.local_ds.get_all_executions(filters)
+
+    def get_available_prompts(self) -> List[str]:
+        """
+        Recupera os prompts distintos utilizados nas execuções para o contexto deste repositório.
+        """
+        return self.local_ds.get_available_prompts()
 
     async def get_image(self, execution_id: str) -> bytes:
         """

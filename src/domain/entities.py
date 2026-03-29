@@ -16,3 +16,11 @@ class Execution:
     start_date: datetime
     end_date: datetime
     storage_image_path: Optional[str]
+    prompt: str
+
+@dataclass
+class ExecutionFilter:
+    """
+    Objeto de valor responsável por encapsular os parâmetros de filtragem de execuções.
+    """
+    prompt: Optional[str] = None

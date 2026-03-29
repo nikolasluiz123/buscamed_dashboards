@@ -5,6 +5,7 @@ from typing import Dict, Any, List, Optional
 from src.data.repositories import ExecutionRepository
 from src.data.file.file_reader import FileReader
 from src.domain.constants.json_keys import PillPackKeys as Keys
+from src.domain.entities import ExecutionFilter
 from src.domain.use_cases.evaluation.evaluators import (
     EvaluateTextSimilarityUseCase,
     EvaluateExactMatchUseCase,
@@ -33,8 +34,11 @@ class CalculatePillPackAccuracyUseCase:
         self.exact_evaluator = exact_evaluator
         self.list_evaluator = list_evaluator
 
-    def execute(self) -> float:
-        executions = self.repository.get_all_executions()
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> float:
+        """
+        Calcula a média de acurácia de todas as execuções válidas no banco de dados.
+        """
+        executions = self.repository.get_all_executions(filters)
         answer_key_data = self.file_reader.load_json(self.answer_key_path)
 
         total_score = 0.0

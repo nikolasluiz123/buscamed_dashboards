@@ -1,9 +1,11 @@
 import json
 import os
+from typing import Optional
 
 from src.data.repositories import ExecutionRepository
 from src.data.file.file_reader import FileReader
 from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
+from src.domain.entities import ExecutionFilter
 
 
 class CalculatePrescriptionAccuracyUseCase:
@@ -23,14 +25,11 @@ class CalculatePrescriptionAccuracyUseCase:
         self.answer_key_path = answer_key_path
         self.single_evaluator = single_evaluator
 
-    def execute(self) -> float:
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> float:
         """
         Calcula a média de acurácia de todas as execuções válidas no banco de dados.
-
-        Returns:
-            float: A acurácia média em porcentagem (0.0 a 100.0).
         """
-        executions = self.repository.get_all_executions()
+        executions = self.repository.get_all_executions(filters)
         answer_key_data = self.file_reader.load_json(self.answer_key_path)
 
         total_score = 0.0

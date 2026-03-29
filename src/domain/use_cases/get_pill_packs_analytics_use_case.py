@@ -1,7 +1,8 @@
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from src.data.repositories import ExecutionRepository
+from src.domain.entities import ExecutionFilter
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
 
 
@@ -40,14 +41,14 @@ class GetPillPacksAnalyticsUseCase:
             return None
         return storage_path.replace("\\", "/").split("/")[-1].split(".")[0]
 
-    def execute(self) -> List[Dict[str, Any]]:
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> List[Dict[str, Any]]:
         """
         Executa a compilação dos dados de análise cruzando com os gabaritos disponíveis.
 
         Returns:
             List[Dict[str, Any]]: Lista de dicionários contendo os dados formatados para análise.
         """
-        executions = self._repository.get_all_executions()
+        executions = self._repository.get_all_executions(filters)
         if not executions:
             return []
 

@@ -17,6 +17,7 @@ class LLMExecutionDTO(BaseModel):
     startDate: str
     endDate: str
     storageImagePath: Optional[str] = None
+    prompt: str
 
     def to_domain(self, execution_type: str) -> Execution:
         """
@@ -31,5 +32,6 @@ class LLMExecutionDTO(BaseModel):
             success=self.success,
             start_date=datetime.fromisoformat(self.startDate.replace("Z", "+00:00")),
             end_date=datetime.fromisoformat(self.endDate.replace("Z", "+00:00")),
-            storage_image_path=self.storageImagePath
+            storage_image_path=self.storageImagePath,
+            prompt=self.prompt
         )

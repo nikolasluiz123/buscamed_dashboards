@@ -1,8 +1,9 @@
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from src.data.repositories import ExecutionRepository
 from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
+from src.domain.entities import ExecutionFilter
 
 
 class GetPrescriptionsAnalyticsUseCase:
@@ -40,14 +41,17 @@ class GetPrescriptionsAnalyticsUseCase:
             return None
         return storage_path.replace("\\", "/").split("/")[-1].split(".")[0]
 
-    def execute(self) -> List[Dict[str, Any]]:
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> List[Dict[str, Any]]:
         """
         Executa a compilação dos dados de análise cruzando com os gabaritos disponíveis.
+
+        Args:
+            filters (Optional[ExecutionFilter]): Filtros opcionais para buscar execuções específicas.
 
         Returns:
             List[Dict[str, Any]]: Lista de dicionários contendo os dados formatados para análise.
         """
-        executions = self._repository.get_all_executions()
+        executions = self._repository.get_all_executions(filters)
         if not executions:
             return []
 

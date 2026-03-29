@@ -169,10 +169,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     prescriptions_analytics_view_model = providers.Factory(
         PrescriptionsAnalyticsViewModel,
-        analytics_use_case=get_prescriptions_analytics_use_case
+        analytics_use_case=get_prescriptions_analytics_use_case,
+        repository=prescription_repository
     )
 
     pill_packs_analytics_view_model = providers.Factory(
         PillPacksAnalyticsViewModel,
-        analytics_use_case=get_pill_packs_analytics_use_case
+        analytics_use_case=get_pill_packs_analytics_use_case,
+        repository=pill_pack_repository
     )

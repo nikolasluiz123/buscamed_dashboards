@@ -24,11 +24,14 @@ class ExecutionQueries:
 
     UPSERT_EXECUTION = """
                        INSERT INTO executions (id, execution_type, input_tokens, output_tokens, result, \
-                                               success, start_date, end_date, storage_image_path) \
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO \
+                                               success, start_date, end_date, storage_image_path, prompt) \
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO \
                        UPDATE SET
                            result = excluded.result, \
-                           success = excluded.success \
+                           success = excluded.success, \
+                           prompt = excluded.prompt \
                        """
 
     GET_ALL_EXECUTIONS_BY_TYPE = "SELECT * FROM executions WHERE execution_type = ?"
+
+    GET_AVAILABLE_PROMPTS = "SELECT DISTINCT prompt FROM executions WHERE execution_type = ? AND prompt IS NOT NULL AND prompt != ''"

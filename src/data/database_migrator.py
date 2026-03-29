@@ -23,7 +23,8 @@ class DatabaseMigrator:
                                       success BOOLEAN,
                                       start_date TIMESTAMP,
                                       end_date TIMESTAMP,
-                                      storage_image_path VARCHAR
+                                      storage_image_path VARCHAR,
+                                      prompt VARCHAR
                                   )
                                   """
         }

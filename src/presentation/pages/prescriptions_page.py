@@ -1,6 +1,7 @@
 import asyncio
 import streamlit as st
 
+from src.domain.entities import ExecutionFilter
 from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
 from src.presentation.components.filters import render_execution_selector
 from src.presentation.components.execution_details import render_execution_details
@@ -24,9 +25,20 @@ def render_prescriptions_page(view_model: PrescriptionsViewModel) -> None:
                 else:
                     st.info("O banco de dados já está atualizado.")
 
-    global_accuracy = view_model.get_global_accuracy()
-    image_executions = view_model.get_image_executions()
-    text_executions = view_model.get_text_executions()
+    st.divider()
+
+    available_prompts = view_model.get_available_prompts()
+    selected_prompt = st.selectbox(
+        "Filtrar por Versão do Prompt:",
+        options=["Todos"] + available_prompts
+    )
+
+    prompt_filter = None if selected_prompt == "Todos" else selected_prompt
+    execution_filter = ExecutionFilter(prompt=prompt_filter)
+
+    global_accuracy = view_model.get_global_accuracy(execution_filter)
+    image_executions = view_model.get_image_executions(execution_filter)
+    text_executions = view_model.get_text_executions(execution_filter)
 
     tab_image, tab_text = st.tabs(["Processamento de Imagem", "Processamento de Texto"])
 

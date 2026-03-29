@@ -3,7 +3,7 @@ import duckdb
 from typing import List, Optional
 
 from src.data.queries import ExecutionQueries
-from src.domain.entities import Execution
+from src.domain.entities import Execution, ExecutionFilter
 
 
 class LocalDataSource(ABC):
@@ -20,7 +20,11 @@ class LocalDataSource(ABC):
         pass
 
     @abstractmethod
-    def get_all_executions(self) -> List[Execution]:
+    def get_all_executions(self, filters: Optional[ExecutionFilter] = None) -> List[Execution]:
+        pass
+
+    @abstractmethod
+    def get_available_prompts(self) -> List[str]:
         pass
 
 
@@ -54,13 +58,21 @@ class DuckDBLocalDataSource(LocalDataSource):
                     execution.success,
                     execution.start_date,
                     execution.end_date,
-                    execution.storage_image_path
+                    execution.storage_image_path,
+                    execution.prompt
                 ])
             con.execute("COMMIT")
 
-    def get_all_executions(self) -> List[Execution]:
+    def get_all_executions(self, filters: Optional[ExecutionFilter] = None) -> List[Execution]:
+        query = ExecutionQueries.GET_ALL_EXECUTIONS_BY_TYPE
+        params = [self.execution_type]
+
+        if filters and filters.prompt:
+            query += " AND prompt = ?"
+            params.append(filters.prompt)
+
         with duckdb.connect(self.db_path) as con:
-            rows = con.execute(ExecutionQueries.GET_ALL_EXECUTIONS_BY_TYPE, [self.execution_type]).fetchall()
+            rows = con.execute(query, params).fetchall()
 
             return [
                 Execution(
@@ -72,9 +84,15 @@ class DuckDBLocalDataSource(LocalDataSource):
                     success=row[5],
                     start_date=row[6],
                     end_date=row[7],
-                    storage_image_path=row[8]
+                    storage_image_path=row[8],
+                    prompt=row[9] if len(row) > 9 and row[9] is not None else ""
                 ) for row in rows
             ]
+
+    def get_available_prompts(self) -> List[str]:
+        with duckdb.connect(self.db_path) as con:
+            rows = con.execute(ExecutionQueries.GET_AVAILABLE_PROMPTS, [self.execution_type]).fetchall()
+            return sorted([row[0] for row in rows])
 
 
 class PrescriptionLocalDataSource(DuckDBLocalDataSource):
