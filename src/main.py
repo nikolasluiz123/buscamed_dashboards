@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from src.di.container import ApplicationContainer
 from src.presentation.pages.prescriptions_page import render_prescriptions_page
 from src.presentation.pages.pill_packs_page import render_pill_packs_page
+from src.presentation.pages.prescriptions_analytics_page import render_prescriptions_analytics_page
+from src.presentation.pages.pill_packs_analytics_page import render_pill_packs_analytics_page
 
 load_dotenv()
 
@@ -33,14 +35,6 @@ def init_container() -> ApplicationContainer:
     return container
 
 
-def render_placeholder_analytics() -> None:
-    """
-    Renderiza um conteúdo temporário para as páginas de análise.
-    """
-    st.title("Análise de Desempenho")
-    st.info("Página em construção. Os gráficos de consumo de tokens e acurácia individual serão exibidos aqui.")
-
-
 def main() -> None:
     """
     Ponto de entrada da aplicação Streamlit responsável pelo roteamento.
@@ -52,6 +46,9 @@ def main() -> None:
     presc_view_model = container.prescriptions_view_model()
     pill_view_model = container.pill_packs_view_model()
 
+    presc_analytics_vm = container.prescriptions_analytics_view_model()
+    pill_analytics_vm = container.pill_packs_analytics_view_model()
+
     presc_audit_page = st.Page(
         page=partial(render_prescriptions_page, presc_view_model),
         title="Auditoria de Execuções",
@@ -61,7 +58,7 @@ def main() -> None:
     )
 
     presc_analytics_page = st.Page(
-        page=render_placeholder_analytics,
+        page=partial(render_prescriptions_analytics_page, presc_analytics_vm),
         title="Análise de Desempenho",
         icon="📊",
         url_path="prescriptions_analytics"
@@ -75,7 +72,7 @@ def main() -> None:
     )
 
     pill_analytics_page = st.Page(
-        page=render_placeholder_analytics,
+        page=partial(render_pill_packs_analytics_page, pill_analytics_vm),
         title="Análise de Desempenho",
         icon="📊",
         url_path="pillpacks_analytics"

@@ -19,6 +19,8 @@ from src.domain.use_cases.evaluation.evaluators import (
 )
 from src.domain.use_cases.get_image_use_case import GetImageUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
+from src.presentation.view_models.pill_packs_analytics_view_model import PillPacksAnalyticsViewModel
+from src.presentation.view_models.prescriptions_analytics_view_model import PrescriptionsAnalyticsViewModel
 from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
 
@@ -146,5 +148,19 @@ class ApplicationContainer(containers.DeclarativeContainer):
         accuracy_use_case=calculate_pill_pack_accuracy_use_case,
         calc_time_use_case=calculate_processing_time_use_case,
         get_image_use_case=get_image_use_case,
+        answer_key_path=config.pill_pack_answer_key_path
+    )
+
+    prescriptions_analytics_view_model = providers.Factory(
+        PrescriptionsAnalyticsViewModel,
+        repository=prescription_repository,
+        single_accuracy_use_case=evaluate_single_prescription_use_case,
+        answer_key_path=config.prescription_answer_key_path
+    )
+
+    pill_packs_analytics_view_model = providers.Factory(
+        PillPacksAnalyticsViewModel,
+        repository=pill_pack_repository,
+        accuracy_use_case=calculate_pill_pack_accuracy_use_case,
         answer_key_path=config.pill_pack_answer_key_path
     )
