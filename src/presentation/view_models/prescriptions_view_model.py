@@ -1,3 +1,4 @@
+# src/presentation/view_models/prescriptions_view_model.py
 import json
 from typing import List, Optional, Dict, Any
 
@@ -58,15 +59,17 @@ class PrescriptionsViewModel:
 
     def get_image_executions(self) -> List[Execution]:
         """
-        Retorna as execuções que possuem processamento de imagem.
+        Retorna as execuções que possuem processamento de imagem e que constam no gabarito.
         """
-        return [e for e in self._repository.get_all_executions() if e.storage_image_path is not None]
+        executions = [e for e in self._repository.get_all_executions() if e.storage_image_path is not None]
+        return [e for e in executions if self.get_expected_data_for_image(e) is not None]
 
     def get_text_executions(self) -> List[Execution]:
         """
-        Retorna as execuções restritas apenas ao processamento de texto.
+        Retorna as execuções restritas apenas ao processamento de texto e que constam no gabarito.
         """
-        return [e for e in self._repository.get_all_executions() if e.storage_image_path is None]
+        executions = [e for e in self._repository.get_all_executions() if e.storage_image_path is None]
+        return [e for e in executions if self.get_expected_data_for_text(e) is not None]
 
     def _extract_image_id(self, storage_path: str | None) -> str | None:
         """

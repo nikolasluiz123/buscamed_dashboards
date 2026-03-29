@@ -18,6 +18,8 @@ from src.domain.use_cases.evaluation.evaluators import (
     EvaluateListGreedyMatchingUseCase
 )
 from src.domain.use_cases.get_image_use_case import GetImageUseCase
+from src.domain.use_cases.get_pill_packs_analytics_use_case import GetPillPacksAnalyticsUseCase
+from src.domain.use_cases.get_prescriptions_analytics_use_case import GetPrescriptionsAnalyticsUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
 from src.presentation.view_models.pill_packs_analytics_view_model import PillPacksAnalyticsViewModel
 from src.presentation.view_models.prescriptions_analytics_view_model import PrescriptionsAnalyticsViewModel
@@ -151,16 +153,26 @@ class ApplicationContainer(containers.DeclarativeContainer):
         answer_key_path=config.pill_pack_answer_key_path
     )
 
-    prescriptions_analytics_view_model = providers.Factory(
-        PrescriptionsAnalyticsViewModel,
+    get_prescriptions_analytics_use_case = providers.Factory(
+        GetPrescriptionsAnalyticsUseCase,
         repository=prescription_repository,
         single_accuracy_use_case=evaluate_single_prescription_use_case,
         answer_key_path=config.prescription_answer_key_path
     )
 
-    pill_packs_analytics_view_model = providers.Factory(
-        PillPacksAnalyticsViewModel,
+    get_pill_packs_analytics_use_case = providers.Factory(
+        GetPillPacksAnalyticsUseCase,
         repository=pill_pack_repository,
         accuracy_use_case=calculate_pill_pack_accuracy_use_case,
         answer_key_path=config.pill_pack_answer_key_path
+    )
+
+    prescriptions_analytics_view_model = providers.Factory(
+        PrescriptionsAnalyticsViewModel,
+        analytics_use_case=get_prescriptions_analytics_use_case
+    )
+
+    pill_packs_analytics_view_model = providers.Factory(
+        PillPacksAnalyticsViewModel,
+        analytics_use_case=get_pill_packs_analytics_use_case
     )

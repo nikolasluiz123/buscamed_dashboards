@@ -41,10 +41,13 @@ class CalculatePillPackAccuracyUseCase:
         valid_executions = 0
 
         for execution in executions:
-            if not execution.result or not execution.storage_image_path:
+            if not execution.result:
                 continue
 
-            execution_id = self._extract_id_from_path(execution.storage_image_path)
+            if execution.storage_image_path:
+                execution_id = self._extract_id_from_path(execution.storage_image_path)
+            else:
+                execution_id = execution.id
 
             if execution_id not in answer_key_data:
                 continue
