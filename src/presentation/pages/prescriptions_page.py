@@ -1,4 +1,3 @@
-import asyncio
 import streamlit as st
 
 from src.domain.entities import ExecutionFilter
@@ -9,17 +8,13 @@ from src.presentation.components.metric_cards import render_metrics
 
 
 def render_prescriptions_page(view_model: PrescriptionsViewModel) -> None:
-    """
-    Renderiza a página principal de avaliação de Prescrições Médicas,
-    dividindo a visualização entre processamento de imagem e texto.
-    """
     st.title("Avaliação: Prescrições Médicas")
 
     col_title, col_button = st.columns([8, 2])
     with col_button:
         if st.button("🔄 Sincronizar Dados", width="stretch"):
             with st.spinner("Buscando novas execuções..."):
-                new_records = asyncio.run(view_model.sync_data())
+                new_records = view_model.sync_data()
                 if new_records > 0:
                     st.success(f"{new_records} novos registros sincronizados!")
                 else:
@@ -37,8 +32,12 @@ def render_prescriptions_page(view_model: PrescriptionsViewModel) -> None:
     execution_filter = ExecutionFilter(prompt=prompt_filter)
 
     global_accuracy = view_model.get_global_accuracy(execution_filter)
-    image_executions = view_model.get_image_executions(execution_filter)
-    text_executions = view_model.get_text_executions(execution_filter)
+
+    evaluated_image_execs = view_model.get_evaluated_image_executions(execution_filter)
+    evaluated_text_execs = view_model.get_evaluated_text_executions(execution_filter)
+
+    image_executions = [e.execution for e in evaluated_image_execs]
+    text_executions = [e.execution for e in evaluated_text_execs]
 
     tab_image, tab_text = st.tabs(["Processamento de Imagem", "Processamento de Texto"])
 
@@ -47,14 +46,13 @@ def render_prescriptions_page(view_model: PrescriptionsViewModel) -> None:
         selected_img_execution = render_execution_selector(image_executions, "presc_img")
 
         if selected_img_execution:
-            expected_data = view_model.get_expected_data_for_image(selected_img_execution)
-            individual_score = view_model.calculate_individual_accuracy(expected_data, selected_img_execution.result)
+            evaluated = next(e for e in evaluated_image_execs if e.execution.id == selected_img_execution.id)
 
             render_execution_details(
-                execution=selected_img_execution,
+                execution=evaluated.execution,
                 get_image_use_case=view_model.get_image_use_case,
-                expected_json=expected_data,
-                individual_accuracy=individual_score
+                expected_json=evaluated.expected_data,
+                individual_accuracy=evaluated.accuracy_score
             )
 
     with tab_text:
@@ -62,12 +60,10 @@ def render_prescriptions_page(view_model: PrescriptionsViewModel) -> None:
         selected_txt_execution = render_execution_selector(text_executions, "presc_txt")
 
         if selected_txt_execution:
-            expected_data = view_model.get_expected_data_for_text(selected_txt_execution)
-            individual_score = view_model.calculate_individual_accuracy(expected_data, selected_txt_execution.result)
-
+            evaluated = next(e for e in evaluated_text_execs if e.execution.id == selected_txt_execution.id)
             render_execution_details(
-                execution=selected_txt_execution,
+                execution=evaluated.execution,
                 get_image_use_case=view_model.get_image_use_case,
-                expected_json=expected_data,
-                individual_accuracy=individual_score
+                expected_json=evaluated.expected_data,
+                individual_accuracy=evaluated.accuracy_score
             )

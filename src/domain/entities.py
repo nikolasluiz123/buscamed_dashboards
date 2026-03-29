@@ -36,3 +36,13 @@ class ExecutionAnalyticsResult:
     output_tokens: int
     processing_time_seconds: float
     accuracy_percentage: float
+
+@dataclass
+class EvaluatedExecution:
+    """
+    Representa uma execução avaliada contendo a entidade original,
+    o gabarito associado e a nota de acurácia.
+    """
+    execution: Execution
+    expected_data: dict
+    accuracy_score: float
