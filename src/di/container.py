@@ -1,11 +1,15 @@
-# src/di/container.py
 from dependency_injector import containers, providers
 
+from src.data.auth.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
 from src.data.file.file_reader import LocalFileReader
-from src.data.local.local_data_source import PrescriptionLocalDataSource, PillPackLocalDataSource
+from src.data.local.connection_factory import FileBasedDuckDBConnectionFactory
+from src.data.local.execution_local_data_source import DuckDBExecutionLocalDataSource
+from src.data.local.sync_local_data_source import DuckDBSyncLocalDataSource
+from src.data.queries.query_manager import QueryManager
+from src.data.remote.auth_interceptor import OIDCAuth
 from src.data.remote.http_client import HttpxHttpClient
-from src.data.remote.remote_datasource import PrescriptionRemoteDataSource, PillPackRemoteDataSource
+from src.data.remote.remote_datasource import ExecutionRemoteDataSource
 from src.data.repositories import ExecutionRepository
 from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
@@ -34,14 +38,36 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     config = providers.Configuration()
 
+    connection_factory = providers.Singleton(
+        FileBasedDuckDBConnectionFactory,
+        db_path=config.db_path
+    )
+
+    query_manager = providers.Singleton(
+        QueryManager,
+        queries_dir=config.queries_dir
+    )
+
     migrator = providers.Factory(
         DatabaseMigrator,
-        db_path=config.db_path
+        connection_factory=connection_factory,
+        migrations_dir=config.migrations_dir,
+        query_manager=query_manager
     )
 
     run_database_migrations_use_case = providers.Factory(
         RunDatabaseMigrationsUseCase,
         migrator=migrator
+    )
+
+    token_provider = providers.Factory(
+        OIDCTokenProvider,
+        audience=config.oidc_audience
+    )
+
+    auth_interceptor = providers.Factory(
+        OIDCAuth,
+        token_provider=token_provider
     )
 
     http_client = providers.Singleton(HttpxHttpClient)
@@ -51,39 +77,61 @@ class ApplicationContainer(containers.DeclarativeContainer):
     exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
     list_evaluator = providers.Singleton(EvaluateListGreedyMatchingUseCase)
 
-    prescription_local_ds = providers.Factory(
-        PrescriptionLocalDataSource,
-        db_path=config.db_path
+    prescription_sync_local_ds = providers.Factory(
+        DuckDBSyncLocalDataSource,
+        connection_factory=connection_factory,
+        query_manager=query_manager,
+        execution_type="prescription"
+    )
+
+    prescription_execution_local_ds = providers.Factory(
+        DuckDBExecutionLocalDataSource,
+        connection_factory=connection_factory,
+        query_manager=query_manager,
+        execution_type="prescription"
     )
 
     prescription_remote_ds = providers.Factory(
-        PrescriptionRemoteDataSource,
+        ExecutionRemoteDataSource,
         http_client=http_client,
         base_url=config.api_base_url,
-        audience=config.oidc_audience
+        auth_interceptor=auth_interceptor,
+        execution_context="prescription"
     )
 
     prescription_repository = providers.Factory(
         ExecutionRepository,
-        local_ds=prescription_local_ds,
+        sync_local_ds=prescription_sync_local_ds,
+        execution_local_ds=prescription_execution_local_ds,
         remote_ds=prescription_remote_ds
     )
 
-    pill_pack_local_ds = providers.Factory(
-        PillPackLocalDataSource,
-        db_path=config.db_path
+    pill_pack_sync_local_ds = providers.Factory(
+        DuckDBSyncLocalDataSource,
+        connection_factory=connection_factory,
+        query_manager=query_manager,
+        execution_type="pillpack"
+    )
+
+    pill_pack_execution_local_ds = providers.Factory(
+        DuckDBExecutionLocalDataSource,
+        connection_factory=connection_factory,
+        query_manager=query_manager,
+        execution_type="pillpack"
     )
 
     pill_pack_remote_ds = providers.Factory(
-        PillPackRemoteDataSource,
+        ExecutionRemoteDataSource,
         http_client=http_client,
         base_url=config.api_base_url,
-        audience=config.oidc_audience
+        auth_interceptor=auth_interceptor,
+        execution_context="pillpack"
     )
 
     pill_pack_repository = providers.Factory(
         ExecutionRepository,
-        local_ds=pill_pack_local_ds,
+        sync_local_ds=pill_pack_sync_local_ds,
+        execution_local_ds=pill_pack_execution_local_ds,
         remote_ds=pill_pack_remote_ds
     )
 

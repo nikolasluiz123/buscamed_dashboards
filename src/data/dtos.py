@@ -7,17 +7,17 @@ from src.domain.entities import Execution
 
 class LLMExecutionDTO(BaseModel):
     """
-    Data Transfer Object para a resposta da API.
+    Data Transfer Object para a resposta e envio da API.
     """
     id: Optional[str] = None
     inputTokens: int
     outputTokens: int
     result: Optional[str] = None
     success: bool
-    startDate: str
-    endDate: str
+    startDate: datetime
+    endDate: datetime
     storageImagePath: Optional[str] = None
-    prompt: str
+    prompt: Optional[str] = None
 
     def to_domain(self, execution_type: str) -> Execution:
         """
@@ -30,8 +30,8 @@ class LLMExecutionDTO(BaseModel):
             output_tokens=self.outputTokens,
             result=self.result,
             success=self.success,
-            start_date=datetime.fromisoformat(self.startDate.replace("Z", "+00:00")),
-            end_date=datetime.fromisoformat(self.endDate.replace("Z", "+00:00")),
+            start_date=self.startDate,
+            end_date=self.endDate,
             storage_image_path=self.storageImagePath,
-            prompt=self.prompt
+            prompt=self.prompt or ""
         )

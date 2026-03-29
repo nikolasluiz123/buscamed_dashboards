@@ -1,0 +1,1 @@
+SELECT last_sync_date FROM sync_control WHERE execution_type = ?;

@@ -23,6 +23,8 @@ def init_container() -> ApplicationContainer:
 
     container.config.from_dict({
         "db_path": os.getenv("DB_PATH", "buscamed_analytics.duckdb"),
+        "queries_dir": "src/data/queries/sql",
+        "migrations_dir": "src/data/migrations",
         "api_base_url": base_url,
         "oidc_audience": os.getenv("OIDC_AUDIENCE", base_url),
         "prescription_answer_key_path": "resources/answer_keys/medical_prescription.json",
