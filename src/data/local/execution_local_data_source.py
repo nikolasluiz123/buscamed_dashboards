@@ -62,13 +62,22 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
     def get_all_executions(self, filters: Optional[ExecutionFilter] = None) -> List[Execution]:
         """
         Recupera as execuções salvas com base nos filtros fornecidos.
+
+        Args:
+            filters (Optional[ExecutionFilter]): Parâmetros de filtro opcionais. O padrão é None.
+
+        Returns:
+            List[Execution]: Uma lista de entidades de execução recuperadas do banco de dados.
         """
         query = self._query_manager.get('get_all_executions_by_type')
         params = [self._execution_type]
+        dynamic_filters = ""
 
         if filters and filters.prompt:
-            query += " AND prompt = ?"
+            dynamic_filters += " AND prompt = ?"
             params.append(filters.prompt)
+
+        query = query.replace("{filters}", dynamic_filters)
 
         with self._connection_factory.get_connection() as con:
             rows = con.execute(query, params).fetchall()
