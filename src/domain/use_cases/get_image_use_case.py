@@ -1,5 +1,3 @@
-# src/domain/use_cases/get_image_use_case.py
-
 from src.data.repositories import ExecutionRepository
 from src.domain.entities import Execution
 

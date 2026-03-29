@@ -1,5 +1,5 @@
 import httpx
-from src.data.auth.token_provider import TokenProvider
+from src.data.providers.token_provider import TokenProvider
 
 class OIDCAuth(httpx.Auth):
     """

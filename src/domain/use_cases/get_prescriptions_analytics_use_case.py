@@ -1,9 +1,10 @@
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Optional
 
 from src.data.repositories import ExecutionRepository
 from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
-from src.domain.entities import ExecutionFilter
+from src.domain.entities import ExecutionFilter, ExecutionAnalyticsResult
+from src.domain.ports.answer_key_provider import AnswerKeyProvider
 
 
 class GetPrescriptionsAnalyticsUseCase:
@@ -16,22 +17,11 @@ class GetPrescriptionsAnalyticsUseCase:
         self,
         repository: ExecutionRepository,
         single_accuracy_use_case: EvaluateSinglePrescriptionUseCase,
-        answer_key_path: str
+        answer_key_provider: AnswerKeyProvider
     ):
         self._repository = repository
         self._single_accuracy_use_case = single_accuracy_use_case
-        self._answer_key_path = answer_key_path
-        self._answer_keys = self._load_answer_keys()
-
-    def _load_answer_keys(self) -> List[Dict[str, Any]]:
-        """
-        Carrega o JSON de gabarito para a memória.
-        """
-        try:
-            with open(self._answer_key_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return []
+        self._answer_key_provider = answer_key_provider
 
     def _extract_image_id(self, storage_path: str | None) -> str | None:
         """
@@ -41,7 +31,7 @@ class GetPrescriptionsAnalyticsUseCase:
             return None
         return storage_path.replace("\\", "/").split("/")[-1].split(".")[0]
 
-    def execute(self, filters: Optional[ExecutionFilter] = None) -> List[Dict[str, Any]]:
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> List[ExecutionAnalyticsResult]:
         """
         Executa a compilação dos dados de análise cruzando com os gabaritos disponíveis.
 
@@ -49,20 +39,22 @@ class GetPrescriptionsAnalyticsUseCase:
             filters (Optional[ExecutionFilter]): Filtros opcionais para buscar execuções específicas.
 
         Returns:
-            List[Dict[str, Any]]: Lista de dicionários contendo os dados formatados para análise.
+            List[ExecutionAnalyticsResult]: Lista de entidades contendo os dados analíticos processados.
         """
         executions = self._repository.get_all_executions(filters)
         if not executions:
             return []
 
+        answer_keys = self._answer_key_provider.get_answer_keys()
         data_rows = []
+
         for execution in executions:
             expected_data = None
             if execution.storage_image_path:
                 image_id = self._extract_image_id(execution.storage_image_path)
-                expected_data = next((item for item in self._answer_keys if item.get("id") == image_id), None)
+                expected_data = answer_keys.get(image_id)
             else:
-                expected_data = next((item for item in self._answer_keys if item.get("id") == execution.id), None)
+                expected_data = answer_keys.get(execution.id)
 
             if not expected_data:
                 continue
@@ -77,13 +69,14 @@ class GetPrescriptionsAnalyticsUseCase:
                 except json.JSONDecodeError:
                     pass
 
-            data_rows.append({
-                "Data": execution.start_date,
-                "ID": execution.id,
-                "Tokens de Entrada": execution.input_tokens or 0,
-                "Tokens de Saída": execution.output_tokens or 0,
-                "Tempo (s)": processing_time,
-                "Acurácia": accuracy
-            })
+            result_entity = ExecutionAnalyticsResult(
+                execution_id=execution.id,
+                start_date=execution.start_date,
+                input_tokens=execution.input_tokens or 0,
+                output_tokens=execution.output_tokens or 0,
+                processing_time_seconds=processing_time,
+                accuracy_percentage=accuracy
+            )
+            data_rows.append(result_entity)
 
         return data_rows

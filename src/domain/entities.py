@@ -24,3 +24,15 @@ class ExecutionFilter:
     Objeto de valor responsável por encapsular os parâmetros de filtragem de execuções.
     """
     prompt: Optional[str] = None
+
+@dataclass
+class ExecutionAnalyticsResult:
+    """
+    Representa o resultado analítico processado de uma execução.
+    """
+    execution_id: str
+    start_date: datetime
+    input_tokens: int
+    output_tokens: int
+    processing_time_seconds: float
+    accuracy_percentage: float

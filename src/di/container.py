@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from src.data.auth.token_provider import OIDCTokenProvider
+from src.data.providers.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
 from src.data.file.file_reader import LocalFileReader
 from src.data.local.connection_factory import FileBasedDuckDBConnectionFactory
@@ -29,6 +29,7 @@ from src.presentation.view_models.pill_packs_analytics_view_model import PillPac
 from src.presentation.view_models.prescriptions_analytics_view_model import PrescriptionsAnalyticsViewModel
 from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
+from src.data.providers.file_answer_key_provider import FileAnswerKeyProvider
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -72,6 +73,18 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     http_client = providers.Singleton(HttpxHttpClient)
     file_reader = providers.Singleton(LocalFileReader)
+
+    prescription_answer_key_provider = providers.Factory(
+        FileAnswerKeyProvider,
+        file_reader=file_reader,
+        file_path=config.prescription_answer_key_path
+    )
+
+    pill_pack_answer_key_provider = providers.Factory(
+        FileAnswerKeyProvider,
+        file_reader=file_reader,
+        file_path=config.pill_pack_answer_key_path
+    )
 
     text_evaluator = providers.Singleton(EvaluateTextSimilarityUseCase)
     exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
@@ -205,14 +218,14 @@ class ApplicationContainer(containers.DeclarativeContainer):
         GetPrescriptionsAnalyticsUseCase,
         repository=prescription_repository,
         single_accuracy_use_case=evaluate_single_prescription_use_case,
-        answer_key_path=config.prescription_answer_key_path
+        answer_key_provider=prescription_answer_key_provider
     )
 
     get_pill_packs_analytics_use_case = providers.Factory(
         GetPillPacksAnalyticsUseCase,
         repository=pill_pack_repository,
         accuracy_use_case=calculate_pill_pack_accuracy_use_case,
-        answer_key_path=config.pill_pack_answer_key_path
+        answer_key_provider=pill_pack_answer_key_provider
     )
 
     prescriptions_analytics_view_model = providers.Factory(
