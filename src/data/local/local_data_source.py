@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import duckdb
 from typing import List, Optional
+from datetime import timezone
 
 from src.data.queries import ExecutionQueries
 from src.domain.entities import Execution, ExecutionFilter
@@ -38,9 +39,23 @@ class DuckDBLocalDataSource(LocalDataSource):
         self.execution_type = execution_type
 
     def get_last_sync_date(self) -> Optional[str]:
+        """
+        Obtém a data da última sincronização registrada.
+
+        Returns:
+            Optional[str]: A data no formato ISO-8601 com indicador de fuso horário (UTC),
+            ou None se não houver registros.
+        """
         with duckdb.connect(self.db_path) as con:
             result = con.execute(ExecutionQueries.GET_LAST_SYNC_DATE, [self.execution_type]).fetchone()
-            return result[0].isoformat() if result and result[0] else None
+
+            if result and result[0]:
+                dt = result[0]
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt.isoformat().replace("+00:00", "Z")
+
+            return None
 
     def save_executions(self, executions: List[Execution]) -> None:
         if not executions:
