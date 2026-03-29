@@ -26,7 +26,14 @@ class DatabaseMigrator:
                                       storage_image_path VARCHAR,
                                       prompt VARCHAR
                                   )
-                                  """
+                                  """,
+            "002_sync_control_schema": """
+                                       CREATE TABLE IF NOT EXISTS sync_control
+                                       (
+                                           execution_type VARCHAR PRIMARY KEY,
+                                           last_sync_date TIMESTAMP NOT NULL
+                                       )
+                                       """
         }
 
     def run_migrations(self) -> None:

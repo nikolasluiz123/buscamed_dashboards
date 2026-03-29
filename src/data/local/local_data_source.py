@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import duckdb
 from typing import List, Optional
-from datetime import timezone
+from datetime import timezone, datetime
 
 from src.data.queries import ExecutionQueries
 from src.domain.entities import Execution, ExecutionFilter
@@ -14,6 +14,10 @@ class LocalDataSource(ABC):
 
     @abstractmethod
     def get_last_sync_date(self) -> Optional[str]:
+        pass
+
+    @abstractmethod
+    def update_last_sync_date(self, sync_date: datetime) -> None:
         pass
 
     @abstractmethod
@@ -41,10 +45,6 @@ class DuckDBLocalDataSource(LocalDataSource):
     def get_last_sync_date(self) -> Optional[str]:
         """
         Obtém a data da última sincronização registrada.
-
-        Returns:
-            Optional[str]: A data no formato ISO-8601 com indicador de fuso horário (UTC),
-            ou None se não houver registros.
         """
         with duckdb.connect(self.db_path) as con:
             result = con.execute(ExecutionQueries.GET_LAST_SYNC_DATE, [self.execution_type]).fetchone()
@@ -56,6 +56,13 @@ class DuckDBLocalDataSource(LocalDataSource):
                 return dt.isoformat().replace("+00:00", "Z")
 
             return None
+
+    def update_last_sync_date(self, sync_date: datetime) -> None:
+        """
+        Atualiza o registro com a data e hora do último sincronismo bem-sucedido.
+        """
+        with duckdb.connect(self.db_path) as con:
+            con.execute(ExecutionQueries.UPSERT_SYNC_DATE, [self.execution_type, sync_date])
 
     def save_executions(self, executions: List[Execution]) -> None:
         if not executions:

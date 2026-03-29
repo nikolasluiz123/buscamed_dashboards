@@ -20,7 +20,13 @@ class ExecutionQueries:
 
     INSERT_MIGRATION = "INSERT INTO schema_migrations (version) VALUES (?)"
 
-    GET_LAST_SYNC_DATE = "SELECT MAX(start_date) FROM executions WHERE execution_type = ?"
+    GET_LAST_SYNC_DATE = "SELECT last_sync_date FROM sync_control WHERE execution_type = ?"
+
+    UPSERT_SYNC_DATE = """
+                       INSERT INTO sync_control (execution_type, last_sync_date)
+                       VALUES (?, ?) ON CONFLICT (execution_type) DO
+                       UPDATE SET last_sync_date = excluded.last_sync_date
+                       """
 
     UPSERT_EXECUTION = """
                        INSERT INTO executions (id, execution_type, input_tokens, output_tokens, result, \

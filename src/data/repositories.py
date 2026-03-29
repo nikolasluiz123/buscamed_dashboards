@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime
 
 from src.data.local.local_data_source import LocalDataSource
 from src.data.remote.remote_datasource import BaseAPIExecutionDataSource
@@ -16,6 +17,12 @@ class ExecutionRepository:
 
     def get_last_sync_date(self) -> Optional[str]:
         return self.local_ds.get_last_sync_date()
+
+    def update_last_sync_date(self, sync_date: datetime) -> None:
+        """
+        Salva na fonte local a data da última operação de sincronização.
+        """
+        self.local_ds.update_last_sync_date(sync_date)
 
     async def fetch_remote_executions(self, since_date: Optional[str]) -> List[Execution]:
         return await self.remote_ds.fetch_executions(since_date)
