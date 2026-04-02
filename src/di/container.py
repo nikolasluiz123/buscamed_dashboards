@@ -1,5 +1,5 @@
-from dependency_injector import containers, providers
-
+import os
+import streamlit_authenticator as stauth
 from src.data.providers.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
 from src.data.file.file_reader import LocalFileReader
@@ -27,12 +27,32 @@ from src.domain.use_cases.get_image_use_case import GetImageUseCase
 from src.domain.use_cases.get_pill_packs_analytics_use_case import GetPillPacksAnalyticsUseCase
 from src.domain.use_cases.get_prescriptions_analytics_use_case import GetPrescriptionsAnalyticsUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
+from src.presentation.auth.auth_manager import StreamlitAuthManager
 from src.presentation.view_models.pill_packs_analytics_view_model import PillPacksAnalyticsViewModel
 from src.presentation.view_models.prescriptions_analytics_view_model import PrescriptionsAnalyticsViewModel
 from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
 from src.data.providers.file_answer_key_provider import FileAnswerKeyProvider
+from dependency_injector import containers, providers
 
+def _build_auth_credentials() -> dict:
+    """
+    Constrói o dicionário de credenciais a partir das variáveis de ambiente.
+    """
+    auth_username = os.getenv("AUTH_USERNAME", "admin")
+    auth_password = os.getenv("AUTH_PASSWORD", "admin")
+
+    hashed_password = stauth.Hasher([auth_password]).generate()[0]
+
+    return {
+        "usernames": {
+            auth_username: {
+                "email": "admin@example.com",
+                "name": "Administrador",
+                "password": hashed_password
+            }
+        }
+    }
 
 class ApplicationContainer(containers.DeclarativeContainer):
     """
@@ -253,4 +273,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
         PillPacksAnalyticsViewModel,
         analytics_use_case=get_pill_packs_analytics_use_case,
         repository=pill_pack_repository
+    )
+
+    auth_manager = providers.Factory(
+        StreamlitAuthManager,
+        credentials=_build_auth_credentials(),
+        cookie_name=os.getenv("AUTH_COOKIE_NAME", "dashboard_cookie"),
+        cookie_key=os.getenv("AUTH_COOKIE_KEY", "dashboard_key"),
+        cookie_expiry_days=30
     )

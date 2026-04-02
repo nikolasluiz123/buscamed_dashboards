@@ -55,3 +55,7 @@ jobs:
             API_BASE_URL=${{ env.BUSCA_MED_SERVICE_URL }}
             OIDC_AUDIENCE=${{ env.BUSCA_MED_SERVICE_URL }}
             APP_ENV=remote
+            AUTH_USERNAME=${{ secrets.AUTH_USERNAME }}
+            AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}
+            AUTH_COOKIE_NAME=${{ secrets.AUTH_COOKIE_NAME }}
+            AUTH_COOKIE_KEY=${{ secrets.AUTH_COOKIE_KEY }}

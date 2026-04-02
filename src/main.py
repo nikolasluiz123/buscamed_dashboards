@@ -45,6 +45,21 @@ def main() -> None:
 
     container = init_container()
 
+    app_env = os.getenv("APP_ENV", "local")
+
+    if app_env == "remote":
+        auth_manager = container.auth_manager()
+        is_authenticated = auth_manager.login()
+
+        if not is_authenticated:
+            if st.session_state.get("authentication_status") is False:
+                st.error("Usuário ou senha incorretos")
+            elif st.session_state.get("authentication_status") is None:
+                st.warning("Por favor, insira suas credenciais")
+            return
+        else:
+            auth_manager.logout()
+
     presc_view_model = container.prescriptions_view_model()
     pill_view_model = container.pill_packs_view_model()
 
