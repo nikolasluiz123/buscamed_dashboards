@@ -11,6 +11,7 @@ env:
   GCP_REGION: southamerica-east1
   ARTIFACT_REPO: buscamed-repo
   SERVICE_NAME: dashboard-service
+  BUSCAMED_SERVICE_NAME: buscamed-service
 
   DEPLOYER_SA: github-deployer-sa@busca-med-dev.iam.gserviceaccount.com
   RUNTIME_SA: run-buscamed-dashboards-sa@busca-med-dev.iam.gserviceaccount.com
@@ -53,7 +54,7 @@ jobs:
           flags: '--service-account=${{ env.RUNTIME_SA }} --allow-unauthenticated'
           env_vars: |
             API_BASE_URL=${{ env.BUSCA_MED_SERVICE_URL }}
-            OIDC_AUDIENCE=${{ env.BUSCA_MED_SERVICE_URL }}
+            OIDC_AUDIENCE=https://${{ env.BUSCAMED_SERVICE_NAME }}-${{ env.GCP_PROJECT_ID }}.a.run.app
             APP_ENV=remote
             AUTH_USERNAME=${{ secrets.AUTH_USERNAME }}
             AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}
