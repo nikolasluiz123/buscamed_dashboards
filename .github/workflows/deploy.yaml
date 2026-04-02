@@ -1,0 +1,57 @@
+name: Deploy Dashboard Service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: busca-med-dev
+  GCP_REGION: southamerica-east1
+  ARTIFACT_REPO: buscamed-repo
+  SERVICE_NAME: dashboard-service
+
+  DEPLOYER_SA: github-deployer-sa@busca-med-dev.iam.gserviceaccount.com
+  RUNTIME_SA: run-buscamed-sa@busca-med-dev.iam.gserviceaccount.com
+  WIF_PROVIDER: projects/529020537081/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+  BUSCA_MED_SERVICE_URL: https://buscamed-service-7zd5rrmmaq-rj.a.run.app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v3'
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOYER_SA }}
+
+      - name: Configure Docker Auth
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Build & Push Container
+        run: |
+          IMAGE_PATH="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          docker build -t "$IMAGE_PATH" .
+          docker push "$IMAGE_PATH"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: 'google-github-actions/deploy-cloudrun@v3'
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.GCP_REGION }}
+          image: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: '--service-account=${{ env.RUNTIME_SA }} --allow-unauthenticated'
+          env_vars: |
+            API_BASE_URL=${{ env.BUSCA_MED_SERVICE_URL }}
+            OIDC_AUDIENCE=${{ env.BUSCA_MED_SERVICE_URL }}
+            APP_ENV=remote
