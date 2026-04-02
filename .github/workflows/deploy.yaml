@@ -13,7 +13,7 @@ env:
   SERVICE_NAME: dashboard-service
 
   DEPLOYER_SA: github-deployer-sa@busca-med-dev.iam.gserviceaccount.com
-  RUNTIME_SA: run-buscamed-sa@busca-med-dev.iam.gserviceaccount.com
+  RUNTIME_SA: run-buscamed-dashboards-sa@busca-med-dev.iam.gserviceaccount.com
   WIF_PROVIDER: projects/529020537081/locations/global/workloadIdentityPools/github-pool/providers/github-provider
   BUSCA_MED_SERVICE_URL: https://buscamed-service-7zd5rrmmaq-rj.a.run.app
 
