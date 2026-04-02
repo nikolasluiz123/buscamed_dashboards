@@ -34,7 +34,7 @@ OIDC_AUDIENCE=http://192.168.0.41:8080
 APP_ENV=local
 IMPERSONATE_SERVICE_ACCOUNT=conta_de_servico_de_testes
 ```
-Substitua conta_de_servico_de_testes pelo valor correto que você pode obter acessando o GCP na área de contas de serviço.
+Substitua conta_de_servico_de_testes pelo valor correto que você pode obter acessando o GCP na área de contas de serviço [aqui](https://console.cloud.google.com/iam-admin/serviceaccounts?project=busca-med-dev&supportedpurview=project).
 
 ## 🔐 Autenticação com o Backend (Google Cloud CLI)
 
