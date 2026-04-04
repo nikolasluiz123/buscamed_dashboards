@@ -1003,5 +1003,380 @@
         }
       }
     ]
+  },
+  {
+    "id": "04_04_2026_17_59_12_953",
+    "medicamentos": [
+      {
+        "nome": "HIDROCLOROTIAZIDA",
+        "apresentacao_dosagem": {
+          "valor": 25,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "de manhã"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": true
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Comprimido"
+        }
+      },
+      {
+        "nome": "LEVOTIROXINA SÓDICA",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "de manhã em jejum"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": true
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Comprimido"
+        }
+      },
+      {
+        "nome": "LOSARTANA",
+        "apresentacao_dosagem": {
+          "valor": 50,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "de manhã e de noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": true
+        },
+        "quantidade_total_prescrita": {
+          "valor": 60,
+          "unidade": "Comprimido"
+        }
+      },
+      {
+        "nome": "OMEPRAZOL",
+        "apresentacao_dosagem": {
+          "valor": 20,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "em dias alternados pela manhã em jejum"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": true
+        },
+        "quantidade_total_prescrita": {
+          "valor": 15,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "SINVASTATINA",
+        "apresentacao_dosagem": {
+          "valor": 20,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "de noite após o jantar"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": true
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Comprimido"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_17_57_21_062",
+    "medicamentos": [
+      {
+        "nome": "Marbopet",
+        "apresentacao_dosagem": {
+          "valor": 27.5,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 0.5,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": 24,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      },
+      {
+        "nome": "Solução Clorexidine",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": null,
+          "unidade": null
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "2x ao dia, aplicar sobre a ferida no braço misturando com sorinho fisiológico"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Frasco"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_17_58_01_389",
+    "medicamentos": [
+      {
+        "nome": "Prediderm",
+        "apresentacao_dosagem": {
+          "valor": 5,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 0.5,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": 24,
+          "unidade": "Hora",
+          "texto_orientacao": "Iniciar amanhã de manhã"
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      },
+      {
+        "nome": "No Stress suplemento",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": 0.5,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": 24,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 60,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": "Frasco"
+        }
+      },
+      {
+        "nome": "Ração terapêutica - Urinary Royal Canin",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": null,
+          "unidade": null
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "conforme indicação do rótulo"
+        },
+        "duracao": {
+          "valor": 30,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_17_58_27_276",
+    "medicamentos": [
+      {
+        "nome": "Cetaphil Loção Hidratante",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": null,
+          "unidade": null
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "Aplicar nos antebraços 2x/dia"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      },
+      {
+        "nome": "Topison (Furoato de Mometasona)",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": null,
+          "unidade": null
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "Aplicar 2x/dia na lesão do braço Direito. Repetir nas crises."
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_17_58_48_846",
+    "medicamentos": [
+      {
+        "nome": "Milbemax gatos",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "repita após 15 dias"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      },
+      {
+        "nome": "Confortis",
+        "apresentacao_dosagem": {
+          "valor": null,
+          "unidade": null
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Comprimido"
+        },
+        "frequencia": {
+          "intervalo": 3,
+          "unidade": "Mês",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": null,
+          "unidade": null
+        }
+      }
+    ]
   }
 ]
