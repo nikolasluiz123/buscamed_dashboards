@@ -25,7 +25,7 @@ class Execution:
     success: bool
     start_date: datetime
     end_date: datetime
-    storage_image_path: Optional[str]
+    storage_image_path: str
     prompt: str
     client_processor_version: str
     llm_model: str
