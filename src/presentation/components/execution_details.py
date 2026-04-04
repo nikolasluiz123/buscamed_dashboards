@@ -76,7 +76,7 @@ def render_execution_details(
             with st.spinner("Carregando imagem..."):
                 try:
                     image_bytes = asyncio.run(get_image_use_case.execute(execution))
-                    st.image(image_bytes, use_container_width=True)
+                    st.image(image_bytes, width='stretch')
                 except Exception as e:
                     st.error(f"Não foi possível carregar a imagem original.\n\nDetalhe do Erro: {str(e)}")
         else:
