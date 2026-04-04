@@ -5,7 +5,7 @@ from typing import List, Optional
 from src.domain.entities import ExecutionFilter, EvaluatedExecution, ExecutionType
 from src.data.repositories import ExecutionRepository
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
-from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
+from src.domain.use_cases.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
 from src.domain.use_cases.evaluation.calculate_processing_time_use_case import CalculateProcessingTimeUseCase
 from src.domain.use_cases.get_image_use_case import GetImageUseCase
 from src.domain.use_cases.get_evaluated_prescriptions_use_case import GetEvaluatedPrescriptionsUseCase

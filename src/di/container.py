@@ -1,6 +1,5 @@
 import os
 
-import httpx
 import streamlit_authenticator as stauth
 from src.data.providers.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
@@ -13,7 +12,7 @@ from src.data.remote.auth_interceptor import OIDCAuth
 from src.data.remote.http_client import HttpxHttpClient
 from src.data.remote.remote_datasource import ExecutionRemoteDataSource
 from src.data.repositories import ExecutionRepository
-from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
+from src.domain.use_cases.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
 from src.domain.use_cases.database_migrations_use_case import RunDatabaseMigrationsUseCase
 from src.domain.use_cases.evaluation.calculate_processing_time_use_case import CalculateProcessingTimeUseCase
