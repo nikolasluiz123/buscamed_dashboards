@@ -1,0 +1,1 @@
+DELETE FROM answer_keys WHERE id = ?;

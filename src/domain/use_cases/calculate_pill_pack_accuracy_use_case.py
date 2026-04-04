@@ -1,9 +1,7 @@
 import json
-import os
 from typing import Dict, Any, List, Optional
 
-from src.data.repositories import ExecutionRepository
-from src.data.file.file_reader import FileReader
+from src.data.repositories import ExecutionRepository, AnswerKeyRepository
 from src.domain.constants.json_keys import PillPackKeys as Keys
 from src.domain.entities import ExecutionFilter
 from src.domain.use_cases.evaluation.evaluators import (
@@ -15,21 +13,19 @@ from src.domain.use_cases.evaluation.evaluators import (
 
 class CalculatePillPackAccuracyUseCase:
     """
-    Calcula a acurácia das execuções de Cartelas de Comprimidos.
+    Calcula a acurácia das execuções de Cartelas de Comprimidos utilizando a base de gabaritos.
     """
 
     def __init__(
             self,
             repository: ExecutionRepository,
-            file_reader: FileReader,
-            answer_key_path: str,
+            answer_key_repository: AnswerKeyRepository,
             text_evaluator: EvaluateTextSimilarityUseCase,
             exact_evaluator: EvaluateExactMatchUseCase,
             list_evaluator: EvaluateListGreedyMatchingUseCase
     ):
         self.repository = repository
-        self.file_reader = file_reader
-        self.answer_key_path = answer_key_path
+        self.answer_key_repository = answer_key_repository
         self.text_evaluator = text_evaluator
         self.exact_evaluator = exact_evaluator
         self.list_evaluator = list_evaluator
@@ -39,7 +35,8 @@ class CalculatePillPackAccuracyUseCase:
         Calcula a média de acurácia de todas as execuções válidas no banco de dados.
         """
         executions = self.repository.get_all_executions(filters)
-        answer_key_data = self.file_reader.load_json(self.answer_key_path)
+        answer_keys = self.answer_key_repository.get_answer_keys(document_type="pillpack")
+        answer_key_dict = {ak.execution_id: ak.content for ak in answer_keys}
 
         total_score = 0.0
         valid_executions = 0
@@ -48,17 +45,12 @@ class CalculatePillPackAccuracyUseCase:
             if not execution.result:
                 continue
 
-            if execution.storage_image_path:
-                execution_id = self._extract_id_from_path(execution.storage_image_path)
-            else:
-                execution_id = execution.id
-
-            if execution_id not in answer_key_data:
+            if execution.id not in answer_key_dict:
                 continue
 
             try:
                 predicted_json = json.loads(execution.result)
-                expected_json = answer_key_data[execution_id]
+                expected_json = answer_key_dict[execution.id]
 
                 execution_score = self._evaluate_pill_pack(expected_json, predicted_json)
                 total_score += execution_score
@@ -68,13 +60,6 @@ class CalculatePillPackAccuracyUseCase:
                 continue
 
         return (total_score / valid_executions * 100) if valid_executions > 0 else 0.0
-
-    def _extract_id_from_path(self, storage_image_path: str) -> str:
-        """
-        Extrai o identificador do arquivo a partir do caminho completo do storage.
-        """
-        file_name = os.path.basename(storage_image_path)
-        return os.path.splitext(file_name)[0]
 
     def _evaluate_pill_pack(self, expected: Dict[str, Any], predicted: Dict[str, Any]) -> float:
         """
@@ -107,7 +92,6 @@ class CalculatePillPackAccuracyUseCase:
     def _get_root_weights(self) -> Dict[str, float]:
         """
         Define a importância de cada atributo principal na composição da nota final da cartela.
-        A soma de todos os pesos deve resultar em 1.0.
         """
         return {
             "nome_medicamento": 0.30,

@@ -21,3 +21,14 @@ CREATE TABLE IF NOT EXISTS sync_control
     execution_type VARCHAR PRIMARY KEY,
     last_sync_date TIMESTAMP NOT NULL
 );
+
+CREATE SEQUENCE IF NOT EXISTS seq_answer_keys_id;
+
+CREATE TABLE IF NOT EXISTS answer_keys
+(
+    id INTEGER DEFAULT nextval('seq_answer_keys_id') PRIMARY KEY,
+    execution_id VARCHAR NOT NULL REFERENCES executions(id),
+    document_type VARCHAR NOT NULL,
+    content JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

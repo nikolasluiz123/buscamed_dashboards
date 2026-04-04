@@ -1,9 +1,10 @@
 import os
 
 import streamlit_authenticator as stauth
+
+from src.data.local.answer_key_local_data_source import DuckDBAnswerKeyLocalDataSource
 from src.data.providers.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
-from src.data.file.file_reader import LocalFileReader
 from src.data.local.connection_factory import FileBasedDuckDBConnectionFactory
 from src.data.local.execution_local_data_source import DuckDBExecutionLocalDataSource
 from src.data.local.sync_local_data_source import DuckDBSyncLocalDataSource
@@ -11,7 +12,8 @@ from src.data.queries.query_manager import QueryManager
 from src.data.remote.auth_interceptor import OIDCAuth
 from src.data.remote.http_client import HttpxHttpClient
 from src.data.remote.remote_datasource import ExecutionRemoteDataSource
-from src.data.repositories import ExecutionRepository
+from src.data.repositories import ExecutionRepository, AnswerKeyRepository
+from src.domain.use_cases.answer_key_use_cases import ManageAnswerKeyUseCase, GetAnswerKeysUseCase
 from src.domain.use_cases.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
 from src.domain.use_cases.calculate_pill_pack_accuracy_use_case import CalculatePillPackAccuracyUseCase
 from src.domain.use_cases.database_migrations_use_case import RunDatabaseMigrationsUseCase
@@ -29,11 +31,11 @@ from src.domain.use_cases.get_pill_packs_analytics_use_case import GetPillPacksA
 from src.domain.use_cases.get_prescriptions_analytics_use_case import GetPrescriptionsAnalyticsUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
 from src.presentation.auth.auth_manager import StreamlitAuthManager
+from src.presentation.view_models.answer_keys_view_model import AnswerKeysViewModel
 from src.presentation.view_models.pill_packs_analytics_view_model import PillPacksAnalyticsViewModel
 from src.presentation.view_models.prescriptions_analytics_view_model import PrescriptionsAnalyticsViewModel
 from src.presentation.view_models.prescriptions_view_model import PrescriptionsViewModel
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
-from src.data.providers.file_answer_key_provider import FileAnswerKeyProvider
 from dependency_injector import containers, providers
 
 def _build_auth_credentials() -> dict:
@@ -95,19 +97,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
     )
 
     http_client = providers.Singleton(HttpxHttpClient)
-    file_reader = providers.Singleton(LocalFileReader)
-
-    prescription_answer_key_provider = providers.Factory(
-        FileAnswerKeyProvider,
-        file_reader=file_reader,
-        file_path=config.prescription_answer_key_path
-    )
-
-    pill_pack_answer_key_provider = providers.Factory(
-        FileAnswerKeyProvider,
-        file_reader=file_reader,
-        file_path=config.pill_pack_answer_key_path
-    )
 
     text_evaluator = providers.Singleton(EvaluateTextSimilarityUseCase)
     exact_evaluator = providers.Singleton(EvaluateExactMatchUseCase)
@@ -127,6 +116,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
         execution_type="prescription"
     )
 
+    answer_key_local_ds = providers.Factory(
+        DuckDBAnswerKeyLocalDataSource,
+        connection_factory=connection_factory,
+        query_manager=query_manager
+    )
+
     prescription_remote_ds = providers.Factory(
         ExecutionRemoteDataSource,
         http_client=http_client,
@@ -140,6 +135,11 @@ class ApplicationContainer(containers.DeclarativeContainer):
         sync_local_ds=prescription_sync_local_ds,
         execution_local_ds=prescription_execution_local_ds,
         remote_ds=prescription_remote_ds
+    )
+
+    answer_key_repository = providers.Factory(
+        AnswerKeyRepository,
+        local_ds=answer_key_local_ds
     )
 
     pill_pack_sync_local_ds = providers.Factory(
@@ -191,16 +191,14 @@ class ApplicationContainer(containers.DeclarativeContainer):
     calculate_prescription_accuracy_use_case = providers.Factory(
         CalculatePrescriptionAccuracyUseCase,
         repository=prescription_repository,
-        file_reader=file_reader,
-        answer_key_path=config.prescription_answer_key_path,
+        answer_key_repository=answer_key_repository,
         single_evaluator=evaluate_single_prescription_use_case
     )
 
     calculate_pill_pack_accuracy_use_case = providers.Factory(
         CalculatePillPackAccuracyUseCase,
         repository=pill_pack_repository,
-        file_reader=file_reader,
-        answer_key_path=config.pill_pack_answer_key_path,
+        answer_key_repository=answer_key_repository,
         text_evaluator=text_evaluator,
         exact_evaluator=exact_evaluator,
         list_evaluator=list_evaluator
@@ -219,14 +217,14 @@ class ApplicationContainer(containers.DeclarativeContainer):
     get_evaluated_prescriptions_use_case = providers.Factory(
         GetEvaluatedPrescriptionsUseCase,
         repository=prescription_repository,
-        answer_key_provider=prescription_answer_key_provider,
+        answer_key_repository=answer_key_repository,
         single_evaluator=evaluate_single_prescription_use_case
     )
 
     get_evaluated_pill_packs_use_case = providers.Factory(
         GetEvaluatedPillPacksUseCase,
         repository=pill_pack_repository,
-        answer_key_provider=pill_pack_answer_key_provider,
+        answer_key_repository=answer_key_repository,
         accuracy_use_case=calculate_pill_pack_accuracy_use_case
     )
 
@@ -234,14 +232,24 @@ class ApplicationContainer(containers.DeclarativeContainer):
         GetPrescriptionsAnalyticsUseCase,
         repository=prescription_repository,
         single_accuracy_use_case=evaluate_single_prescription_use_case,
-        answer_key_provider=prescription_answer_key_provider
+        answer_key_repository=answer_key_repository
     )
 
     get_pill_packs_analytics_use_case = providers.Factory(
         GetPillPacksAnalyticsUseCase,
         repository=pill_pack_repository,
         accuracy_use_case=calculate_pill_pack_accuracy_use_case,
-        answer_key_provider=pill_pack_answer_key_provider
+        answer_key_repository=answer_key_repository
+    )
+
+    manage_answer_key_use_case = providers.Factory(
+        ManageAnswerKeyUseCase,
+        repository=answer_key_repository
+    )
+
+    get_answer_keys_use_case = providers.Factory(
+        GetAnswerKeysUseCase,
+        repository=answer_key_repository
     )
 
     prescriptions_view_model = providers.Factory(
@@ -274,6 +282,15 @@ class ApplicationContainer(containers.DeclarativeContainer):
         PillPacksAnalyticsViewModel,
         analytics_use_case=get_pill_packs_analytics_use_case,
         repository=pill_pack_repository
+    )
+
+    answer_keys_view_model = providers.Factory(
+        AnswerKeysViewModel,
+        manage_use_case=manage_answer_key_use_case,
+        get_use_case=get_answer_keys_use_case,
+        prescription_repository=prescription_repository,
+        pill_pack_repository=pill_pack_repository,
+        get_image_use_case=get_image_use_case
     )
 
     auth_manager = providers.Factory(

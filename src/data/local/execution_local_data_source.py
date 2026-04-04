@@ -31,6 +31,13 @@ class ExecutionLocalDataSource(ABC):
     def get_available_llm_models(self) -> List[str]:
         pass
 
+    @abstractmethod
+    def get_executions_without_answer_keys(self) -> List[Execution]:
+        pass
+
+    @abstractmethod
+    def get_execution_by_id(self, execution_id: str) -> Optional[Execution]:
+        pass
 
 class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
     """
@@ -153,3 +160,66 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
             query = self._query_manager.get('get_available_llm_models')
             rows = con.execute(query, [self._execution_type]).fetchall()
             return sorted([row[0] for row in rows])
+
+    def get_executions_without_answer_keys(self) -> List[Execution]:
+        """
+        Recupera as execuções que não possuem um gabarito associado.
+        """
+        query = self._query_manager.get('get_executions_without_answer_keys')
+
+        with self._connection_factory.get_connection() as con:
+            rows = con.execute(query, [self._execution_type]).fetchall()
+
+            return [
+                Execution(
+                    id=row[0],
+                    execution_type=row[1],
+                    processing_type=ExecutionType(row[2]),
+                    input_text=row[3],
+                    input_tokens=row[4],
+                    output_tokens=row[5],
+                    result=row[6],
+                    success=row[7],
+                    start_date=row[8],
+                    end_date=row[9],
+                    storage_image_path=row[10],
+                    prompt=row[11] if len(row) > 11 and row[11] is not None else "",
+                    client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
+                    llm_model=row[13] if len(row) > 13 and row[13] is not None else ""
+                ) for row in rows
+            ]
+
+    def get_execution_by_id(self, execution_id: str) -> Optional[Execution]:
+        """
+        Busca uma execução pelo seu identificador único.
+
+        Args:
+            execution_id (str): Identificador da execução procurada.
+
+        Returns:
+            Optional[Execution]: A entidade Execution correspondente ou None caso não exista.
+        """
+        query = self._query_manager.get('get_execution_by_id')
+
+        with self._connection_factory.get_connection() as con:
+            row = con.execute(query, [execution_id]).fetchone()
+
+            if not row:
+                return None
+
+            return Execution(
+                id=row[0],
+                execution_type=row[1],
+                processing_type=ExecutionType(row[2]),
+                input_text=row[3],
+                input_tokens=row[4],
+                output_tokens=row[5],
+                result=row[6],
+                success=row[7],
+                start_date=row[8],
+                end_date=row[9],
+                storage_image_path=row[10],
+                prompt=row[11] if len(row) > 11 and row[11] is not None else "",
+                client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
+                llm_model=row[13] if len(row) > 13 and row[13] is not None else ""
+            )

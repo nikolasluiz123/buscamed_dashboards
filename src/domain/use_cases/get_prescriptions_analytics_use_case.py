@@ -1,60 +1,42 @@
 import json
 from typing import List, Optional
 
-from src.data.repositories import ExecutionRepository
+from src.data.repositories import ExecutionRepository, AnswerKeyRepository
 from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
 from src.domain.entities import ExecutionFilter, ExecutionAnalyticsResult
-from src.domain.ports.answer_key_provider import AnswerKeyProvider
 
 
 class GetPrescriptionsAnalyticsUseCase:
     """
     Caso de uso responsável por compilar os dados de análise de desempenho de Prescrições Médicas,
-    filtrando apenas as execuções que possuem gabarito correspondente.
+    filtrando apenas as execuções que possuem gabarito correspondente no banco.
     """
 
     def __init__(
-        self,
-        repository: ExecutionRepository,
-        single_accuracy_use_case: EvaluateSinglePrescriptionUseCase,
-        answer_key_provider: AnswerKeyProvider
+            self,
+            repository: ExecutionRepository,
+            single_accuracy_use_case: EvaluateSinglePrescriptionUseCase,
+            answer_key_repository: AnswerKeyRepository
     ):
         self._repository = repository
         self._single_accuracy_use_case = single_accuracy_use_case
-        self._answer_key_provider = answer_key_provider
-
-    def _extract_image_id(self, storage_path: str | None) -> str | None:
-        """
-        Extrai o identificador da imagem a partir do caminho do storage.
-        """
-        if not storage_path:
-            return None
-        return storage_path.replace("\\", "/").split("/")[-1].split(".")[0]
+        self._answer_key_repository = answer_key_repository
 
     def execute(self, filters: Optional[ExecutionFilter] = None) -> List[ExecutionAnalyticsResult]:
         """
         Executa a compilação dos dados de análise cruzando com os gabaritos disponíveis.
-
-        Args:
-            filters (Optional[ExecutionFilter]): Filtros opcionais para buscar execuções específicas.
-
-        Returns:
-            List[ExecutionAnalyticsResult]: Lista de entidades contendo os dados analíticos processados.
         """
         executions = self._repository.get_all_executions(filters)
         if not executions:
             return []
 
-        answer_keys = self._answer_key_provider.get_answer_keys()
+        answer_keys = self._answer_key_repository.get_answer_keys(document_type="prescription")
+        answer_key_dict = {ak.execution_id: ak.content for ak in answer_keys}
+
         data_rows = []
 
         for execution in executions:
-            expected_data = None
-            if execution.storage_image_path:
-                image_id = self._extract_image_id(execution.storage_image_path)
-                expected_data = answer_keys.get(image_id)
-            else:
-                expected_data = answer_keys.get(execution.id)
+            expected_data = answer_key_dict.get(execution.id)
 
             if not expected_data:
                 continue

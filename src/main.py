@@ -4,6 +4,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from src.di.container import ApplicationContainer
+from src.presentation.pages.answer_keys_page import render_answer_keys_page
 from src.presentation.pages.prescriptions_page import render_prescriptions_page
 from src.presentation.pages.pill_packs_page import render_pill_packs_page
 from src.presentation.pages.prescriptions_analytics_page import render_prescriptions_analytics_page
@@ -66,6 +67,8 @@ def main() -> None:
     presc_analytics_vm = container.prescriptions_analytics_view_model()
     pill_analytics_vm = container.pill_packs_analytics_view_model()
 
+    answer_keys_vm = container.answer_keys_view_model()
+
     presc_audit_page = st.Page(
         page=partial(render_prescriptions_page, presc_view_model),
         title="Auditoria de Execuções",
@@ -95,9 +98,17 @@ def main() -> None:
         url_path="pillpacks_analytics"
     )
 
+    answer_keys_page = st.Page(
+        page=partial(render_answer_keys_page, answer_keys_vm),
+        title="Manutenção de Gabaritos",
+        icon="📋",
+        url_path="answer_keys_maintenance"
+    )
+
     pages = {
         "Prescrições Médicas": [presc_audit_page, presc_analytics_page],
-        "Cartelas de Comprimidos": [pill_audit_page, pill_analytics_page]
+        "Cartelas de Comprimidos": [pill_audit_page, pill_analytics_page],
+        "Gabaritos": [answer_keys_page]
     }
 
     pg = st.navigation(pages)

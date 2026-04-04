@@ -1,28 +1,24 @@
 import json
-import os
 from typing import Optional
 
-from src.data.repositories import ExecutionRepository
-from src.data.file.file_reader import FileReader
+from src.data.repositories import ExecutionRepository, AnswerKeyRepository
 from src.domain.use_cases.evaluation.evaluate_single_prescription_use_case import EvaluateSinglePrescriptionUseCase
 from src.domain.entities import ExecutionFilter
 
 
 class CalculatePrescriptionAccuracyUseCase:
     """
-    Calcula a acurácia média global das execuções de Receitas Médicas.
+    Calcula a acurácia média global das execuções de Receitas Médicas utilizando a base de gabaritos.
     """
 
     def __init__(
             self,
             repository: ExecutionRepository,
-            file_reader: FileReader,
-            answer_key_path: str,
+            answer_key_repository: AnswerKeyRepository,
             single_evaluator: EvaluateSinglePrescriptionUseCase
     ):
         self.repository = repository
-        self.file_reader = file_reader
-        self.answer_key_path = answer_key_path
+        self.answer_key_repository = answer_key_repository
         self.single_evaluator = single_evaluator
 
     def execute(self, filters: Optional[ExecutionFilter] = None) -> float:
@@ -30,7 +26,8 @@ class CalculatePrescriptionAccuracyUseCase:
         Calcula a média de acurácia de todas as execuções válidas no banco de dados.
         """
         executions = self.repository.get_all_executions(filters)
-        answer_key_data = self.file_reader.load_json(self.answer_key_path)
+        answer_keys = self.answer_key_repository.get_answer_keys(document_type="prescription")
+        answer_key_dict = {ak.execution_id: ak.content for ak in answer_keys}
 
         total_score = 0.0
         valid_executions = 0
@@ -39,14 +36,12 @@ class CalculatePrescriptionAccuracyUseCase:
             if not execution.result:
                 continue
 
-            execution_id = self._extract_id_from_path(execution.storage_image_path)
-
-            if execution_id not in answer_key_data:
+            if execution.id not in answer_key_dict:
                 continue
 
             try:
                 predicted_json = json.loads(execution.result)
-                expected_json = answer_key_data[execution_id]
+                expected_json = answer_key_dict[execution.id]
 
                 execution_score = self.single_evaluator.execute(expected_json, predicted_json)
                 total_score += execution_score
@@ -56,10 +51,3 @@ class CalculatePrescriptionAccuracyUseCase:
                 continue
 
         return (total_score / valid_executions * 100) if valid_executions > 0 else 0.0
-
-    def _extract_id_from_path(self, storage_image_path: str) -> str:
-        """
-        Extrai o identificador do arquivo a partir do caminho completo do storage.
-        """
-        file_name = os.path.basename(storage_image_path)
-        return os.path.splitext(file_name)[0]

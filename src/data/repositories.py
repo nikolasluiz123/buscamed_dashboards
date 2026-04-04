@@ -1,10 +1,11 @@
 from typing import List, Optional
 from datetime import datetime
 
+from src.data.local.answer_key_local_data_source import AnswerKeyLocalDataSource
 from src.data.local.sync_local_data_source import SyncLocalDataSource
 from src.data.local.execution_local_data_source import ExecutionLocalDataSource
 from src.data.remote.remote_datasource import ExecutionRemoteDataSource
-from src.domain.entities import Execution, ExecutionFilter
+from src.domain.entities import Execution, ExecutionFilter, AnswerKey
 
 
 class ExecutionRepository:
@@ -73,3 +74,53 @@ class ExecutionRepository:
         Recupera os modelos LLM distintos utilizados nas execuções para o contexto deste repositório.
         """
         return self._execution_local_ds.get_available_llm_models()
+
+    def get_executions_without_answer_keys(self) -> List[Execution]:
+        """
+        Recupera as execuções locais que não estão vinculadas a um gabarito.
+        """
+        return self._execution_local_ds.get_executions_without_answer_keys()
+
+    def get_execution_by_id(self, execution_id: str) -> Optional[Execution]:
+        """
+        Busca uma execução registrada localmente através do seu ID.
+
+        Args:
+            execution_id (str): Identificador único.
+
+        Returns:
+            Optional[Execution]: Instância da entidade procurada ou None caso não exista.
+        """
+        return self._execution_local_ds.get_execution_by_id(execution_id)
+
+class AnswerKeyRepository:
+    """
+    Repositório para manipulação de gabaritos.
+    """
+
+    def __init__(self, local_ds: AnswerKeyLocalDataSource):
+        self._local_ds = local_ds
+
+    def save_answer_key(self, answer_key: AnswerKey) -> AnswerKey:
+        """
+        Persiste um gabarito.
+        """
+        return self._local_ds.save(answer_key)
+
+    def get_answer_keys(self, document_type: Optional[str] = None) -> List[AnswerKey]:
+        """
+        Recupera os gabaritos disponíveis.
+        """
+        return self._local_ds.get_all(document_type)
+
+    def get_answer_key_by_execution(self, execution_id: str) -> Optional[AnswerKey]:
+        """
+        Busca o gabarito de uma execução específica.
+        """
+        return self._local_ds.get_by_execution_id(execution_id)
+
+    def delete_answer_key(self, answer_key_id: int) -> None:
+        """
+        Exclui um gabarito pelo seu identificador único.
+        """
+        self._local_ds.delete(answer_key_id)

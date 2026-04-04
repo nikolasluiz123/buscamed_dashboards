@@ -61,3 +61,14 @@ class EvaluatedExecution:
     execution: Execution
     expected_data: dict
     accuracy_score: float
+
+@dataclass
+class AnswerKey:
+    """
+    Representa um gabarito associado a uma execução no sistema.
+    """
+    execution_id: str
+    document_type: str
+    content: Dict[str, Any]
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
