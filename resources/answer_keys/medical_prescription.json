@@ -1,377 +1,742 @@
 [
-	{
-		"id": "28_03_2026_12_07_20_060",
-		"medicamentos": [
-		{
-		  "nome": "Amoxilina",
-		  "apresentacao_dosagem": {
-			"valor": "500",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": "1",
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": "8",
-			"unidade": "horas",
-			"texto_orientacao": null
-		  },
-		  "duracao": {
-			"valor": 7,
-			"unidade": "dias",
-			"uso_continuo": false
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 21,
-			"unidade": "comprimido"
-		  }
-		}
-	  ]
-	},
-	{
-		"id": "28_03_2026_12_07_59_777",
-		"medicamentos": [
-		{
-		  "nome": "B12",
-		  "apresentacao_dosagem": {
-			"valor": 1000,
-			"unidade": "mcg"
-		  },
-		  "dose": {
-			"valor": null,
-			"unidade": null
-		  },
-		  "frequencia": {
-			"intervalo": 2,
-			"unidade": "dia",
-			"texto_orientacao": null
-		  },
-		  "duracao": {
-			"valor": "60",
-			"unidade": "dia",
-			"uso_continuo": false
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		}
-	  ]
-	},
-	{
-		"id": "28_03_2026_12_08_11_205",
-		"medicamentos": [
-		{
-		  "nome": "Colecalciferol",
-		  "apresentacao_dosagem": {
-			"valor": 4000,
-			"unidade": "UI"
-		  },
-		  "dose": {
-			"valor": null,
-			"unidade": null
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "junto com o almoço"
-		  },
-		  "duracao": {
-			"valor": 60,
-			"unidade": "dia",
-			"uso_continuo": false
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		},
-		{
-		  "nome": "Bariat XR",
-		  "apresentacao_dosagem": {
-			"valor": null,
-			"unidade": null
-		  },
-		  "dose": {
-			"valor": "2",
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "junto com almoço ou jantar"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		}
-	  ]
-	},
-	{
-		"id": "28_03_2026_12_08_32_455",
-		"medicamentos": [
-		{
-		  "nome": "Vitamina B12",
-		  "apresentacao_dosagem": {
-			"valor": "25",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "1 comprimido ao dia"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		},
-		{
-		  "nome": "Famotidina",
-		  "apresentacao_dosagem": {
-			"valor": "20",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "1 comprimido ao dia"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		},
-		{
-		  "nome": "Codeina",
-		  "apresentacao_dosagem": {
-			"valor": "20",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "1 comprimido ao dia"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		},
-		{
-		  "nome": "Piroxican",
-		  "apresentacao_dosagem": {
-			"valor": "20",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "1 comprimido ao dia"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		},
-		{
-		  "nome": "Orfenadrina Citrato",
-		  "apresentacao_dosagem": {
-			"valor": "35",
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "comprimido"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "1 comprimido ao dia"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": null,
-			"unidade": null
-		  }
-		}
-	  ]
-	},
-	{
-		"id": "28_03_2026_12_08_45_400",
-		"medicamentos": [
-		{
-		  "nome": "Finasterida",
-		  "apresentacao_dosagem": {
-			"valor": 3,
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "cápsula"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "à noite"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 30,
-			"unidade": "cápsulas"
-		  }
-		},
-		{
-		  "nome": "Imipramina",
-		  "apresentacao_dosagem": {
-			"valor": 10,
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "cápsula"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "à noite"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 30,
-			"unidade": "cápsulas"
-		  }
-		},
-		{
-		  "nome": "Tansulosina",
-		  "apresentacao_dosagem": {
-			"valor": 0.3,
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "cápsula"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "à noite"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 30,
-			"unidade": "cápsulas"
-		  }
-		},
-		{
-		  "nome": "Oxbutinina",
-		  "apresentacao_dosagem": {
-			"valor": 2,
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "cápsula"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "à noite"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 30,
-			"unidade": "cápsulas"
-		  }
-		},
-		{
-		  "nome": "Vitamina E",
-		  "apresentacao_dosagem": {
-			"valor": 100,
-			"unidade": "mg"
-		  },
-		  "dose": {
-			"valor": 1,
-			"unidade": "cápsula"
-		  },
-		  "frequencia": {
-			"intervalo": null,
-			"unidade": null,
-			"texto_orientacao": "à noite"
-		  },
-		  "duracao": {
-			"valor": null,
-			"unidade": null,
-			"uso_continuo": true
-		  },
-		  "quantidade_total_prescrita": {
-			"valor": 30,
-			"unidade": "cápsulas"
-		  }
-		}
-	  ]
-	}
+  {
+    "id": "04_04_2026_08_33_49_960",
+    "medicamentos": [
+      {
+        "nome": "AMOXICILINA",
+        "apresentacao_dosagem": {
+          "valor": 875,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "CLAVULANATO",
+        "apresentacao_dosagem": {
+          "valor": 125,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "IBUPROFENO",
+        "apresentacao_dosagem": {
+          "valor": 400,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 3,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "DIPIRONA",
+        "apresentacao_dosagem": {
+          "valor": 1,
+          "unidade": "Grama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 6,
+          "unidade": "Hora",
+          "texto_orientacao": "EM CASO DE DOR OU FEBRE"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_34_39_530",
+    "medicamentos": [
+      {
+        "nome": "AMOXICILINA",
+        "apresentacao_dosagem": {
+          "valor": 875,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "CLAVULANATO",
+        "apresentacao_dosagem": {
+          "valor": 125,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "IBUPROFENO",
+        "apresentacao_dosagem": {
+          "valor": 400,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 3,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "DIPIRONA",
+        "apresentacao_dosagem": {
+          "valor": 1,
+          "unidade": "Grama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 6,
+          "unidade": "Hora",
+          "texto_orientacao": "EM CASO DE DOR OU FEBRE"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_35_17_737",
+    "medicamentos": [
+      {
+        "nome": "AMOXICILINA",
+        "apresentacao_dosagem": {
+          "valor": 875,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "CLAVULANATO",
+        "apresentacao_dosagem": {
+          "valor": 125,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "IBUPROFENO",
+        "apresentacao_dosagem": {
+          "valor": 400,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 3,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "DIPIRONA",
+        "apresentacao_dosagem": {
+          "valor": 1,
+          "unidade": "Grama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 6,
+          "unidade": "Hora",
+          "texto_orientacao": "EM CASO DE DOR OU FEBRE"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_37_24_369",
+    "medicamentos": [
+      {
+        "nome": "AMOXICILINA",
+        "apresentacao_dosagem": {
+          "valor": 875,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "CLAVULANATO",
+        "apresentacao_dosagem": {
+          "valor": 125,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "IBUPROFENO",
+        "apresentacao_dosagem": {
+          "valor": 400,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": null
+        },
+        "duracao": {
+          "valor": 3,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      },
+      {
+        "nome": "DIPIRONA",
+        "apresentacao_dosagem": {
+          "valor": 1,
+          "unidade": "Grama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": 6,
+          "unidade": "Hora",
+          "texto_orientacao": "EM CASO DE DOR OU FEBRE"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 1,
+          "unidade": "Caixa"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_38_05_407",
+    "medicamentos": [
+      {
+        "nome": "Finasterida",
+        "apresentacao_dosagem": {
+          "valor": 3,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Imipramina",
+        "apresentacao_dosagem": {
+          "valor": 10,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Tansulosina",
+        "apresentacao_dosagem": {
+          "valor": 0.3,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Oxbutinina",
+        "apresentacao_dosagem": {
+          "valor": 2,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Vitamina E",
+        "apresentacao_dosagem": {
+          "valor": 100,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_38_28_004",
+    "medicamentos": [
+      {
+        "nome": "Finasterida",
+        "apresentacao_dosagem": {
+          "valor": 3,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Imipramina",
+        "apresentacao_dosagem": {
+          "valor": 10,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Tansulosina",
+        "apresentacao_dosagem": {
+          "valor": 0.3,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Oxbutinina",
+        "apresentacao_dosagem": {
+          "valor": 2,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      },
+      {
+        "nome": "Vitamina E",
+        "apresentacao_dosagem": {
+          "valor": 100,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "Cápsula"
+        },
+        "frequencia": {
+          "intervalo": null,
+          "unidade": null,
+          "texto_orientacao": "à noite"
+        },
+        "duracao": {
+          "valor": null,
+          "unidade": null,
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 30,
+          "unidade": "Cápsula"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_38_54_529",
+    "medicamentos": [
+      {
+        "nome": "Amoxilina",
+        "apresentacao_dosagem": {
+          "valor": 500,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "comprimido"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": "por via oral"
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 21,
+          "unidade": "comprimido"
+        }
+      }
+    ]
+  },
+  {
+    "id": "04_04_2026_08_39_15_356",
+    "medicamentos": [
+      {
+        "nome": "Amoxilina",
+        "apresentacao_dosagem": {
+          "valor": 500,
+          "unidade": "Miligrama"
+        },
+        "dose": {
+          "valor": 1,
+          "unidade": "comprimido"
+        },
+        "frequencia": {
+          "intervalo": 8,
+          "unidade": "Hora",
+          "texto_orientacao": "por via oral"
+        },
+        "duracao": {
+          "valor": 7,
+          "unidade": "Dia",
+          "uso_continuo": false
+        },
+        "quantidade_total_prescrita": {
+          "valor": 21,
+          "unidade": "comprimido"
+        }
+      }
+    ]
+  }
 ]

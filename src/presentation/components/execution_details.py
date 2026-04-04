@@ -14,7 +14,7 @@ def render_execution_details(
 ) -> None:
     """
     Renderiza os detalhes de uma execução contendo o gabarito, o JSON de resultado e a imagem processada,
-    além de apresentar as métricas individuais da execução.
+    além de apresentar as métricas individuais da execução e o texto de entrada.
 
     Args:
         execution (Execution): A execução que será detalhada.
@@ -39,6 +39,16 @@ def render_execution_details(
         st.metric("Tokens de Saída", execution.output_tokens)
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+    if execution.input_text:
+        with st.expander("📝 Texto de Entrada (Input Text)", expanded=False):
+            st.text_area(
+                label="Conteúdo submetido à LLM",
+                value=execution.input_text,
+                height=150,
+                disabled=True,
+                label_visibility="collapsed"
+            )
 
     col_expected, col_result, col_img = st.columns([3, 3, 2])
 
@@ -66,7 +76,7 @@ def render_execution_details(
             with st.spinner("Carregando imagem..."):
                 try:
                     image_bytes = asyncio.run(get_image_use_case.execute(execution))
-                    st.image(image_bytes, width="stretch")
+                    st.image(image_bytes, use_container_width=True)
                 except Exception as e:
                     st.error(f"Não foi possível carregar a imagem original.\n\nDetalhe do Erro: {str(e)}")
         else:

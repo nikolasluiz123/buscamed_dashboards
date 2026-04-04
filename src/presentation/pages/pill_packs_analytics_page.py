@@ -1,9 +1,9 @@
-# src/presentation/pages/pill_packs_analytics_page.py
 import streamlit as st
 
-from src.domain.entities import ExecutionFilter
+from src.domain.entities import ExecutionFilter, ExecutionType
 from src.presentation.view_models.pill_packs_analytics_view_model import PillPacksAnalyticsViewModel
 from src.presentation.components.analytics_charts import render_performance_charts
+from src.presentation.components.filters import render_client_processor_version_filter
 
 
 def render_pill_packs_analytics_page(view_model: PillPacksAnalyticsViewModel) -> None:
@@ -15,15 +15,42 @@ def render_pill_packs_analytics_page(view_model: PillPacksAnalyticsViewModel) ->
 
     st.divider()
 
+    col_prompt, col_version, col_type = st.columns(3)
+
     available_prompts = view_model.get_available_prompts()
-    selected_prompt = st.selectbox(
-        "Filtrar por Versão do Prompt:",
-        options=["Todos"] + available_prompts,
-        key="pill_packs_analytics_prompt_filter"
-    )
+    with col_prompt:
+        selected_prompt = st.selectbox(
+            "Filtrar por Versão do Prompt:",
+            options=["Todos"] + available_prompts,
+            key="pill_packs_analytics_prompt_filter"
+        )
+
+    available_versions = view_model.get_available_client_processor_versions()
+    with col_version:
+        selected_version = render_client_processor_version_filter(
+            available_versions,
+            key_prefix="pill_packs_analytics"
+        )
+
+    with col_type:
+        selected_type = st.selectbox(
+            "Filtrar por Tipo de Processamento:",
+            options=["Todos", "Imagem", "Texto"],
+            key="pill_packs_analytics_type_filter"
+        )
 
     prompt_filter = None if selected_prompt == "Todos" else selected_prompt
-    execution_filter = ExecutionFilter(prompt=prompt_filter)
+    type_filter = None
+    if selected_type == "Imagem":
+        type_filter = ExecutionType.IMAGE
+    elif selected_type == "Texto":
+        type_filter = ExecutionType.TEXT
+
+    execution_filter = ExecutionFilter(
+        prompt=prompt_filter,
+        processing_type=type_filter,
+        client_processor_version=selected_version
+    )
 
     df = view_model.get_performance_dataframe(filters=execution_filter)
 

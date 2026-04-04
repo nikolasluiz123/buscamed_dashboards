@@ -27,17 +27,12 @@ class GetEvaluatedPrescriptionsUseCase:
             return None
         return storage_path.replace("\\", "/").split("/")[-1].split(".")[0]
 
-    def execute(self, filters: Optional[ExecutionFilter] = None, require_image: bool = True) -> List[EvaluatedExecution]:
+    def execute(self, filters: Optional[ExecutionFilter] = None) -> List[EvaluatedExecution]:
         executions = self._repository.get_all_executions(filters)
         answer_keys = self._answer_key_provider.get_answer_keys()
         evaluated_list = []
 
         for ex in executions:
-            if require_image and not ex.storage_image_path:
-                continue
-            if not require_image and ex.storage_image_path:
-                continue
-
             expected_data = None
             if ex.storage_image_path:
                 image_id = self._extract_image_id(ex.storage_image_path)

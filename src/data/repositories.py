@@ -61,3 +61,9 @@ class ExecutionRepository:
         Busca os bytes da imagem associada a uma execução através da fonte remota pelo seu ID.
         """
         return await self._remote_ds.fetch_image(execution_id)
+
+    def get_available_client_processor_versions(self) -> List[str]:
+        """
+        Recupera as versões distintas do client processor utilizadas nas execuções.
+        """
+        return self._execution_local_ds.get_available_client_processor_versions()

@@ -1,7 +1,8 @@
 import asyncio
+import copy
 from typing import List, Optional
 
-from src.domain.entities import ExecutionFilter, EvaluatedExecution
+from src.domain.entities import ExecutionFilter, EvaluatedExecution, ExecutionType
 from src.data.repositories import ExecutionRepository
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
 from src.domain.calculate_prescription_accuracy_use_case import CalculatePrescriptionAccuracyUseCase
@@ -36,7 +37,14 @@ class PrescriptionsViewModel:
         return self._accuracy_use_case.execute(filters)
 
     def get_evaluated_image_executions(self, filters: Optional[ExecutionFilter] = None) -> List[EvaluatedExecution]:
-        return self._get_evaluated_use_case.execute(filters, require_image=True)
+        img_filter = copy.copy(filters) if filters else ExecutionFilter()
+        img_filter.processing_type = ExecutionType.IMAGE
+        return self._get_evaluated_use_case.execute(img_filter)
 
     def get_evaluated_text_executions(self, filters: Optional[ExecutionFilter] = None) -> List[EvaluatedExecution]:
-        return self._get_evaluated_use_case.execute(filters, require_image=False)
+        txt_filter = copy.copy(filters) if filters else ExecutionFilter()
+        txt_filter.processing_type = ExecutionType.TEXT
+        return self._get_evaluated_use_case.execute(txt_filter)
+
+    def get_available_client_processor_versions(self) -> List[str]:
+        return self._repository.get_available_client_processor_versions()

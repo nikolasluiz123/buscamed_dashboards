@@ -1,8 +1,8 @@
 import asyncio
-import json
-from typing import List, Optional, Dict, Any
+import copy
+from typing import List, Optional
 
-from src.domain.entities import Execution, ExecutionFilter, EvaluatedExecution
+from src.domain.entities import ExecutionFilter, EvaluatedExecution, ExecutionType
 from src.data.repositories import ExecutionRepository
 from src.domain.use_cases.get_evaluated_pill_packs_use_case import GetEvaluatedPillPacksUseCase
 from src.domain.use_cases.sync_executions_use_case import SyncExecutionsUseCase
@@ -28,7 +28,7 @@ class PillPacksViewModel:
         self.get_image_use_case = get_image_use_case
         self._get_evaluated_use_case = get_evaluated_use_case
 
-    async def sync_data(self) -> int:
+    def sync_data(self) -> int:
         return asyncio.run(self._sync_use_case.execute())
 
     def get_available_prompts(self) -> List[str]:
@@ -38,7 +38,14 @@ class PillPacksViewModel:
         return self._accuracy_use_case.execute(filters)
 
     def get_evaluated_image_executions(self, filters: Optional[ExecutionFilter] = None) -> List[EvaluatedExecution]:
-        return self._get_evaluated_use_case.execute(filters, require_image=True)
+        img_filter = copy.copy(filters) if filters else ExecutionFilter()
+        img_filter.processing_type = ExecutionType.IMAGE
+        return self._get_evaluated_use_case.execute(img_filter)
 
     def get_evaluated_text_executions(self, filters: Optional[ExecutionFilter] = None) -> List[EvaluatedExecution]:
-        return self._get_evaluated_use_case.execute(filters, require_image=False)
+        txt_filter = copy.copy(filters) if filters else ExecutionFilter()
+        txt_filter.processing_type = ExecutionType.TEXT
+        return self._get_evaluated_use_case.execute(txt_filter)
+
+    def get_available_client_processor_versions(self) -> List[str]:
+        return self._repository.get_available_client_processor_versions()

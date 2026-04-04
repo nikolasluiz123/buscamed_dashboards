@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from src.data.queries.query_manager import QueryManager
-from src.domain.entities import Execution, ExecutionFilter
+from src.domain.entities import Execution, ExecutionFilter, ExecutionType
 from src.data.local.connection_factory import DuckDBConnectionFactory
+
 
 class ExecutionLocalDataSource(ABC):
     """
@@ -20,6 +21,10 @@ class ExecutionLocalDataSource(ABC):
 
     @abstractmethod
     def get_available_prompts(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_available_client_processor_versions(self) -> List[str]:
         pass
 
 
@@ -48,6 +53,8 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                 con.execute(query, [
                     execution.id,
                     execution.execution_type,
+                    execution.processing_type.value,
+                    execution.input_text,
                     execution.input_tokens,
                     execution.output_tokens,
                     execution.result,
@@ -55,7 +62,8 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     execution.start_date,
                     execution.end_date,
                     execution.storage_image_path,
-                    execution.prompt
+                    execution.prompt,
+                    execution.client_processor_version
                 ])
             con.execute("COMMIT")
 
@@ -73,9 +81,18 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
         params = [self._execution_type]
         dynamic_filters = ""
 
-        if filters and filters.prompt:
-            dynamic_filters += " AND prompt = ?"
-            params.append(filters.prompt)
+        if filters:
+            if filters.prompt:
+                dynamic_filters += " AND prompt = ?"
+                params.append(filters.prompt)
+
+            if filters.processing_type:
+                dynamic_filters += " AND processing_type = ?"
+                params.append(filters.processing_type.value)
+
+            if filters.client_processor_version:
+                dynamic_filters += " AND client_processor_version = ?"
+                params.append(filters.client_processor_version)
 
         query = query.replace("{filters}", dynamic_filters)
 
@@ -86,14 +103,17 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                 Execution(
                     id=row[0],
                     execution_type=row[1],
-                    input_tokens=row[2],
-                    output_tokens=row[3],
-                    result=row[4],
-                    success=row[5],
-                    start_date=row[6],
-                    end_date=row[7],
-                    storage_image_path=row[8],
-                    prompt=row[9] if len(row) > 9 and row[9] is not None else ""
+                    processing_type=ExecutionType(row[2]),
+                    input_text=row[3],
+                    input_tokens=row[4],
+                    output_tokens=row[5],
+                    result=row[6],
+                    success=row[7],
+                    start_date=row[8],
+                    end_date=row[9],
+                    storage_image_path=row[10],
+                    prompt=row[11] if len(row) > 11 and row[11] is not None else "",
+                    client_processor_version=row[12] if len(row) > 12 and row[12] is not None else ""
                 ) for row in rows
             ]
 
@@ -103,5 +123,14 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
         """
         with self._connection_factory.get_connection() as con:
             query = self._query_manager.get('get_available_prompts')
+            rows = con.execute(query, [self._execution_type]).fetchall()
+            return sorted([row[0] for row in rows])
+
+    def get_available_client_processor_versions(self) -> List[str]:
+        """
+        Busca as diferentes versões de processador de cliente utilizadas nas execuções.
+        """
+        with self._connection_factory.get_connection() as con:
+            query = self._query_manager.get('get_available_client_processor_versions')
             rows = con.execute(query, [self._execution_type]).fetchall()
             return sorted([row[0] for row in rows])

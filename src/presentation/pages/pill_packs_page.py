@@ -3,7 +3,7 @@ import streamlit as st
 
 from src.domain.entities import ExecutionFilter
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
-from src.presentation.components.filters import render_execution_selector
+from src.presentation.components.filters import render_execution_selector, render_client_processor_version_filter
 from src.presentation.components.execution_details import render_execution_details
 from src.presentation.components.metric_cards import render_metrics
 
@@ -23,14 +23,28 @@ def render_pill_packs_page(view_model: PillPacksViewModel) -> None:
 
     st.divider()
 
+    col_prompt, col_version = st.columns(2)
+
     available_prompts = view_model.get_available_prompts()
-    selected_prompt = st.selectbox(
-        "Filtrar por Versão do Prompt:",
-        options=["Todos"] + available_prompts
-    )
+    with col_prompt:
+        selected_prompt = st.selectbox(
+            "Filtrar por Versão do Prompt:",
+            options=["Todos"] + available_prompts,
+            key="pill_packs_prompt_filter"
+        )
+
+    available_versions = view_model.get_available_client_processor_versions()
+    with col_version:
+        selected_version = render_client_processor_version_filter(
+            available_versions,
+            key_prefix="pill_packs"
+        )
 
     prompt_filter = None if selected_prompt == "Todos" else selected_prompt
-    execution_filter = ExecutionFilter(prompt=prompt_filter)
+    execution_filter = ExecutionFilter(
+        prompt=prompt_filter,
+        client_processor_version=selected_version
+    )
 
     global_accuracy = view_model.get_global_accuracy(execution_filter)
 
