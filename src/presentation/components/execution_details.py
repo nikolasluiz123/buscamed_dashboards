@@ -1,9 +1,26 @@
 import json
 import asyncio
 import streamlit as st
+from datetime import timedelta
 
 from src.domain.entities import Execution
 from src.domain.use_cases.get_image_use_case import GetImageUseCase
+
+
+@st.cache_data(max_entries=200, ttl=timedelta(hours=2), show_spinner=False)
+def get_cached_image_bytes(_get_image_use_case: GetImageUseCase, _execution: Execution, execution_id: str) -> bytes:
+    """
+    Recupera os bytes da imagem processada de forma assíncrona.
+
+    Args:
+        _get_image_use_case (GetImageUseCase): Caso de uso para obter os bytes da imagem.
+        _execution (Execution): Entidade de execução contendo os dados de armazenamento.
+        execution_id (str): Identificador único da execução utilizado como chave de cache.
+
+    Returns:
+        bytes: Arquivo de imagem em formato de bytes.
+    """
+    return asyncio.run(_get_image_use_case.execute(_execution))
 
 
 def render_execution_details(
@@ -75,7 +92,11 @@ def render_execution_details(
         if execution.storage_image_path:
             with st.spinner("Carregando imagem..."):
                 try:
-                    image_bytes = asyncio.run(get_image_use_case.execute(execution))
+                    image_bytes = get_cached_image_bytes(
+                        _get_image_use_case=get_image_use_case,
+                        _execution=execution,
+                        execution_id=execution.id
+                    )
                     st.image(image_bytes, width='stretch')
                 except Exception as e:
                     st.error(f"Não foi possível carregar a imagem original.\n\nDetalhe do Erro: {str(e)}")

@@ -1,4 +1,6 @@
 import os
+
+import httpx
 import streamlit_authenticator as stauth
 from src.data.providers.token_provider import OIDCTokenProvider
 from src.data.database_migrator import DatabaseMigrator
