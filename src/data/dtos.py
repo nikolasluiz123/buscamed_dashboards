@@ -21,6 +21,7 @@ class LLMExecutionDTO(BaseModel):
     storageImagePath: Optional[str] = None
     prompt: Optional[str] = None
     clientProcessorVersion: str
+    llmModel: str
 
     def to_domain(self, execution_type: str) -> Execution:
         """
@@ -39,5 +40,6 @@ class LLMExecutionDTO(BaseModel):
             end_date=self.endDate,
             storage_image_path=self.storageImagePath,
             prompt=self.prompt or "",
-            client_processor_version=self.clientProcessorVersion
+            client_processor_version=self.clientProcessorVersion,
+            llm_model=self.llmModel
         )

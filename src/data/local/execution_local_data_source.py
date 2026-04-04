@@ -27,6 +27,10 @@ class ExecutionLocalDataSource(ABC):
     def get_available_client_processor_versions(self) -> List[str]:
         pass
 
+    @abstractmethod
+    def get_available_llm_models(self) -> List[str]:
+        pass
+
 
 class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
     """
@@ -63,7 +67,8 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     execution.end_date,
                     execution.storage_image_path,
                     execution.prompt,
-                    execution.client_processor_version
+                    execution.client_processor_version,
+                    execution.llm_model
                 ])
             con.execute("COMMIT")
 
@@ -93,6 +98,10 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
             if filters.client_processor_version:
                 dynamic_filters += " AND client_processor_version = ?"
                 params.append(filters.client_processor_version)
+            
+            if filters.llm_model:
+                dynamic_filters += " AND llm_model = ?"
+                params.append(filters.llm_model)
 
         query = query.replace("{filters}", dynamic_filters)
 
@@ -113,7 +122,8 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     end_date=row[9],
                     storage_image_path=row[10],
                     prompt=row[11] if len(row) > 11 and row[11] is not None else "",
-                    client_processor_version=row[12] if len(row) > 12 and row[12] is not None else ""
+                    client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
+                    llm_model=row[13] if len(row) > 13 and row[13] is not None else ""
                 ) for row in rows
             ]
 
@@ -132,5 +142,14 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
         """
         with self._connection_factory.get_connection() as con:
             query = self._query_manager.get('get_available_client_processor_versions')
+            rows = con.execute(query, [self._execution_type]).fetchall()
+            return sorted([row[0] for row in rows])
+
+    def get_available_llm_models(self) -> List[str]:
+        """
+        Busca os diferentes modelos LLM utilizados nas execuções.
+        """
+        with self._connection_factory.get_connection() as con:
+            query = self._query_manager.get('get_available_llm_models')
             rows = con.execute(query, [self._execution_type]).fetchall()
             return sorted([row[0] for row in rows])

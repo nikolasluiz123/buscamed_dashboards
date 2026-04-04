@@ -49,3 +49,6 @@ class PillPacksViewModel:
 
     def get_available_client_processor_versions(self) -> List[str]:
         return self._repository.get_available_client_processor_versions()
+
+    def get_available_llm_models(self) -> List[str]:
+        return self._repository.get_available_llm_models()

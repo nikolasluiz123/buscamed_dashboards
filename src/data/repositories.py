@@ -67,3 +67,9 @@ class ExecutionRepository:
         Recupera as versões distintas do client processor utilizadas nas execuções.
         """
         return self._execution_local_ds.get_available_client_processor_versions()
+
+    def get_available_llm_models(self) -> List[str]:
+        """
+        Recupera os modelos LLM distintos utilizados nas execuções para o contexto deste repositório.
+        """
+        return self._execution_local_ds.get_available_llm_models()

@@ -58,3 +58,27 @@ def render_client_processor_version_filter(available_versions: List[str], key_pr
         return None
 
     return selected_version
+
+def render_llm_model_filter(available_models: List[str], key_prefix: str) -> Optional[str]:
+    """
+    Renderiza um selectbox para filtragem por modelo LLM.
+
+    Args:
+        available_models (List[str]): Lista de modelos disponíveis no banco de dados.
+        key_prefix (str): Prefixo único para o controle de estado no Streamlit.
+
+    Returns:
+        Optional[str]: O modelo selecionado para filtro ou None se 'Todos' for selecionado.
+    """
+    options = ["Todos"] + (available_models if available_models else [])
+
+    selected_model = st.selectbox(
+        "Filtrar por Modelo LLM:",
+        options=options,
+        key=f"selectbox_llm_model_{key_prefix}"
+    )
+
+    if selected_model == "Todos":
+        return None
+
+    return selected_model

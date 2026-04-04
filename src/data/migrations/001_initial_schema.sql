@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS executions
     end_date TIMESTAMP,
     storage_image_path VARCHAR,
     prompt VARCHAR,
-    client_processor_version VARCHAR NOT NULL
+    client_processor_version VARCHAR NOT NULL,
+    llm_model VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sync_control

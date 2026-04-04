@@ -3,7 +3,7 @@ import streamlit as st
 
 from src.domain.entities import ExecutionFilter
 from src.presentation.view_models.pill_packs_view_model import PillPacksViewModel
-from src.presentation.components.filters import render_execution_selector, render_client_processor_version_filter
+from src.presentation.components.filters import render_execution_selector, render_client_processor_version_filter, render_llm_model_filter
 from src.presentation.components.execution_details import render_execution_details
 from src.presentation.components.metric_cards import render_metrics
 
@@ -23,7 +23,7 @@ def render_pill_packs_page(view_model: PillPacksViewModel) -> None:
 
     st.divider()
 
-    col_prompt, col_version = st.columns(2)
+    col_prompt, col_version, col_model = st.columns(3)
 
     available_prompts = view_model.get_available_prompts()
     with col_prompt:
@@ -40,10 +40,18 @@ def render_pill_packs_page(view_model: PillPacksViewModel) -> None:
             key_prefix="pill_packs"
         )
 
+    available_models = view_model.get_available_llm_models()
+    with col_model:
+        selected_model = render_llm_model_filter(
+            available_models,
+            key_prefix="pill_packs"
+        )
+
     prompt_filter = None if selected_prompt == "Todos" else selected_prompt
     execution_filter = ExecutionFilter(
         prompt=prompt_filter,
-        client_processor_version=selected_version
+        client_processor_version=selected_version,
+        llm_model=selected_model
     )
 
     global_accuracy = view_model.get_global_accuracy(execution_filter)

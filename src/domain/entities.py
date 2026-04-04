@@ -28,6 +28,7 @@ class Execution:
     storage_image_path: Optional[str]
     prompt: str
     client_processor_version: str
+    llm_model: str
 
 @dataclass
 class ExecutionFilter:
@@ -37,6 +38,7 @@ class ExecutionFilter:
     prompt: Optional[str] = None
     processing_type: Optional[ExecutionType] = None
     client_processor_version: Optional[str] = None
+    llm_model: Optional[str] = None
 
 @dataclass
 class ExecutionAnalyticsResult:
