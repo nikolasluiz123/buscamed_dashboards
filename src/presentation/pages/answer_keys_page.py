@@ -46,6 +46,33 @@ def get_prescription_template() -> str:
     return json.dumps(template, indent=4, ensure_ascii=False)
 
 
+def get_pillpack_template() -> str:
+    """
+    Retorna o template JSON base para pillpacks estruturado a partir do schema definido.
+
+    Returns:
+        str: JSON formatado contendo a estrutura vazia de pillpack.
+    """
+    template = {
+        "componentes": [
+            {
+                "dosagem_unidade": None,
+                "dosagem_valor": None,
+                "principio_ativo": None
+            }
+        ],
+        "data_validade": None,
+        "indicacoes": [],
+        "lote": None,
+        "nome_medicamento": None,
+        "uso": {
+            "restricoes_idade": [],
+            "vias_administracao": []
+        }
+    }
+    return json.dumps(template, indent=4, ensure_ascii=False)
+
+
 @st.cache_data(max_entries=200, ttl=timedelta(hours=2), show_spinner=False)
 def get_cached_execution_image(_view_model: AnswerKeysViewModel, execution_id: str) -> bytes:
     """
@@ -124,6 +151,8 @@ def render_answer_key_dialog(view_model: AnswerKeysViewModel, answer_key=None):
         else:
             if doc_type == "prescription":
                 initial_content = get_prescription_template()
+            elif doc_type == "pillpack":
+                initial_content = get_pillpack_template()
             else:
                 initial_content = "{\n\n}"
 
