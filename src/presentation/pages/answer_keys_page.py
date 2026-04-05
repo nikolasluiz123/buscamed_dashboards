@@ -2,7 +2,23 @@ import json
 import asyncio
 import streamlit as st
 import pandas as pd
+from datetime import timedelta
 from src.presentation.view_models.answer_keys_view_model import AnswerKeysViewModel
+
+
+@st.cache_data(max_entries=200, ttl=timedelta(hours=2), show_spinner=False)
+def get_cached_execution_image(_view_model: AnswerKeysViewModel, execution_id: str) -> bytes:
+    """
+    Recupera os bytes da imagem vinculada à execução utilizando cache de dados.
+
+    Args:
+        _view_model (AnswerKeysViewModel): A ViewModel contendo a lógica de acesso à imagem.
+        execution_id (str): Identificador único da execução utilizado como chave de cache.
+
+    Returns:
+        bytes: Arquivo de imagem em formato de bytes ou None caso não encontrada.
+    """
+    return asyncio.run(_view_model.get_execution_image(execution_id))
 
 
 @st.dialog("Formulário de Gabarito", width="large")
@@ -66,9 +82,12 @@ def render_answer_key_dialog(view_model: AnswerKeysViewModel, answer_key=None):
         if exec_id:
             with st.spinner("Carregando imagem..."):
                 try:
-                    image_bytes = asyncio.run(view_model.get_execution_image(exec_id))
+                    image_bytes = get_cached_execution_image(
+                        _view_model=view_model,
+                        execution_id=exec_id
+                    )
                     if image_bytes:
-                        st.image(image_bytes, use_container_width=True)
+                        st.image(image_bytes, width='stretch')
                     else:
                         st.info("Imagem não disponível para esta execução.")
                 except Exception:
