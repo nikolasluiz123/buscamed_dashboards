@@ -3,7 +3,47 @@ import asyncio
 import streamlit as st
 import pandas as pd
 from datetime import timedelta
+from streamlit_ace import st_ace
 from src.presentation.view_models.answer_keys_view_model import AnswerKeysViewModel
+
+
+def get_prescription_template() -> str:
+    """
+    Retorna o template JSON base para prescrições estruturado a partir do schema definido.
+
+    Returns:
+        str: JSON formatado contendo a estrutura vazia de medicamentos.
+    """
+    template = {
+        "medicamentos": [
+            {
+                "nome": None,
+                "apresentacao_dosagem": {
+                    "valor": None,
+                    "unidade": None
+                },
+                "dose": {
+                    "valor": None,
+                    "unidade": None
+                },
+                "frequencia": {
+                    "intervalo": None,
+                    "unidade": None,
+                    "texto_orientacao": None
+                },
+                "duracao": {
+                    "valor": None,
+                    "unidade": None,
+                    "uso_continuo": None
+                },
+                "quantidade_total_prescrita": {
+                    "valor": None,
+                    "unidade": None
+                }
+            }
+        ]
+    }
+    return json.dumps(template, indent=4, ensure_ascii=False)
 
 
 @st.cache_data(max_entries=200, ttl=timedelta(hours=2), show_spinner=False)
@@ -21,12 +61,35 @@ def get_cached_execution_image(_view_model: AnswerKeysViewModel, execution_id: s
     return asyncio.run(_view_model.get_execution_image(execution_id))
 
 
+@st.dialog("Visualização Ampliada", width="large")
+def render_fullscreen_image_dialog(image_bytes: bytes):
+    """
+    Renderiza um modal dedicado para a visualização da imagem em maior escala.
+
+    Args:
+        image_bytes (bytes): O arquivo de imagem em bytes a ser exibido.
+    """
+    st.image(image_bytes, width='stretch')
+
+
 @st.dialog("Formulário de Gabarito", width="large")
 def render_answer_key_dialog(view_model: AnswerKeysViewModel, answer_key=None):
     """
     Renderiza o formulário modal para criação ou edição de um gabarito,
     exibindo a imagem da execução para facilitar a conferência.
     """
+    st.markdown(
+        """
+        <style>
+        div[data-testid="stDialog"] div[role="dialog"] {
+            width: 90vw !important;
+            max-width: 90vw !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     is_editing = answer_key is not None
 
     col_form, col_img = st.columns([1, 1])
@@ -56,8 +119,26 @@ def render_answer_key_dialog(view_model: AnswerKeysViewModel, answer_key=None):
                     format_func=lambda x: options_map[x]
                 )
 
-        initial_content = json.dumps(answer_key.content, indent=4, ensure_ascii=False) if is_editing else "{\n\n}"
-        content_str = st.text_area("Conteúdo (JSON)", value=initial_content, height=400)
+        if is_editing:
+            initial_content = json.dumps(answer_key.content, indent=4, ensure_ascii=False)
+        else:
+            if doc_type == "prescription":
+                initial_content = get_prescription_template()
+            else:
+                initial_content = "{\n\n}"
+
+        st.caption("Conteúdo (JSON)")
+        content_str = st_ace(
+            value=initial_content,
+            language="json",
+            theme="monokai",
+            keybinding="vscode",
+            height=400,
+            show_gutter=True,
+            show_print_margin=False,
+            wrap=True,
+            auto_update=True
+        )
 
         if st.button("Salvar", type="primary"):
             if not exec_id:
@@ -87,6 +168,9 @@ def render_answer_key_dialog(view_model: AnswerKeysViewModel, answer_key=None):
                         execution_id=exec_id
                     )
                     if image_bytes:
+                        if st.button("🔍 Expandir Imagem em Tela Cheia", width='stretch'):
+                            render_fullscreen_image_dialog(image_bytes)
+
                         st.image(image_bytes, width='stretch')
                     else:
                         st.info("Imagem não disponível para esta execução.")
@@ -110,7 +194,7 @@ def render_answer_keys_page(view_model: AnswerKeysViewModel) -> None:
     with col_action:
         st.write("")
         st.write("")
-        if st.button("➕ Novo Gabarito", use_container_width=True):
+        if st.button("➕ Novo Gabarito", width='stretch'):
             render_answer_key_dialog(view_model)
 
     filter_val = None if doc_type_filter == "Todos" else doc_type_filter
@@ -133,7 +217,7 @@ def render_answer_keys_page(view_model: AnswerKeysViewModel) -> None:
 
     event = st.dataframe(
         df.drop(columns=["_obj"]),
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
         selection_mode="single-row",
         on_select="rerun"
