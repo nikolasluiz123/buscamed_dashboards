@@ -34,7 +34,7 @@ class GetImageUseCase:
         else:
             execution = execution_or_id
 
-        if not execution.storage_image_path:
+        if not execution.storage_path:
             raise ValueError("A execução informada não possui uma imagem associada.")
 
         if execution.execution_type == "prescription":

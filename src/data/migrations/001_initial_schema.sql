@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS executions
     success BOOLEAN,
     start_date TIMESTAMP WITH TIME ZONE,
     end_date TIMESTAMP WITH TIME ZONE,
-    storage_image_path VARCHAR,
+    storage_path VARCHAR,
     prompt VARCHAR,
     client_processor_version VARCHAR NOT NULL,
     llm_model VARCHAR NOT NULL

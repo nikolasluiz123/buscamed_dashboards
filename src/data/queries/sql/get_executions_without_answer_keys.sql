@@ -9,7 +9,7 @@ SELECT
     e.success,
     e.start_date,
     e.end_date,
-    e.storage_image_path,
+    e.storage_path,
     e.prompt,
     e.client_processor_version,
     e.llm_model

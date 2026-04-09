@@ -18,7 +18,7 @@ class LLMExecutionDTO(BaseModel):
     success: bool
     startDate: datetime
     endDate: datetime
-    storageImagePath: str = None
+    storagePath: str = None
     prompt: Optional[str] = None
     clientProcessorVersion: str
     llmModel: str
@@ -38,7 +38,7 @@ class LLMExecutionDTO(BaseModel):
             success=self.success,
             start_date=self.startDate,
             end_date=self.endDate,
-            storage_image_path=self.storageImagePath,
+            storage_path=self.storagePath,
             prompt=self.prompt or "",
             client_processor_version=self.clientProcessorVersion,
             llm_model=self.llmModel

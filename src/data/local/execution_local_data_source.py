@@ -72,7 +72,7 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     execution.success,
                     execution.start_date,
                     execution.end_date,
-                    execution.storage_image_path,
+                    execution.storage_path,
                     execution.prompt,
                     execution.client_processor_version,
                     execution.llm_model
@@ -127,7 +127,7 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     success=row[7],
                     start_date=row[8],
                     end_date=row[9],
-                    storage_image_path=row[10],
+                    storage_path=row[10],
                     prompt=row[11] if len(row) > 11 and row[11] is not None else "",
                     client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
                     llm_model=row[13] if len(row) > 13 and row[13] is not None else ""
@@ -182,7 +182,7 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                     success=row[7],
                     start_date=row[8],
                     end_date=row[9],
-                    storage_image_path=row[10],
+                    storage_path=row[10],
                     prompt=row[11] if len(row) > 11 and row[11] is not None else "",
                     client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
                     llm_model=row[13] if len(row) > 13 and row[13] is not None else ""
@@ -218,7 +218,7 @@ class DuckDBExecutionLocalDataSource(ExecutionLocalDataSource):
                 success=row[7],
                 start_date=row[8],
                 end_date=row[9],
-                storage_image_path=row[10],
+                storage_path=row[10],
                 prompt=row[11] if len(row) > 11 and row[11] is not None else "",
                 client_processor_version=row[12] if len(row) > 12 and row[12] is not None else "",
                 llm_model=row[13] if len(row) > 13 and row[13] is not None else ""

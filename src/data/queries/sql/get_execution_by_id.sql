@@ -9,7 +9,7 @@ SELECT
     success,
     start_date,
     end_date,
-    storage_image_path,
+    storage_path,
     prompt,
     client_processor_version,
     llm_model

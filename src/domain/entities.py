@@ -9,6 +9,7 @@ class ExecutionType(str, Enum):
     """
     IMAGE = "IMAGE"
     TEXT = "TEXT"
+    PDF = "PDF"
 
 @dataclass
 class Execution:
@@ -25,7 +26,7 @@ class Execution:
     success: bool
     start_date: datetime
     end_date: datetime
-    storage_image_path: str
+    storage_path: str
     prompt: str
     client_processor_version: str
     llm_model: str

@@ -89,7 +89,7 @@ def render_execution_details(
 
     with col_img:
         st.markdown("#### Arquivo Original")
-        if execution.storage_image_path:
+        if execution.storage_path:
             with st.spinner("Carregando imagem..."):
                 try:
                     image_bytes = get_cached_image_bytes(
